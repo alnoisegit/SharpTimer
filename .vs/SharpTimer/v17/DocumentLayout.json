@@ -54,8 +54,7 @@
               "RelativeToolTip": "src\\Plugin\\Utils.cs",
               "ViewState": "AQIAAKUFAAAAAAAAAAAAACIAAABoAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-20T03:45:21.68Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-06-20T03:45:21.68Z"
             },
             {
               "$type": "Document",
@@ -67,8 +66,7 @@
               "RelativeToolTip": "src\\Player\\PlayerUtils.cs",
               "ViewState": "AQIAABIAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-16T15:50:08.448Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-06-16T15:50:08.448Z"
             },
             {
               "$type": "Document",
@@ -80,8 +78,7 @@
               "RelativeToolTip": "src\\SharpTimer.cs",
               "ViewState": "AQIAABsAAAAAAAAAAAAAAPkAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-16T15:32:52.566Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-06-16T15:32:52.566Z"
             },
             {
               "$type": "Document",
@@ -93,8 +90,7 @@
               "RelativeToolTip": "remote_data\\surf_.json",
               "ViewState": "AQIAAKQAAAAAAAAAAAAIwLYAAAAOAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2024-06-16T15:32:35.847Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-06-16T15:32:35.847Z"
             },
             {
               "$type": "Document",
@@ -116,7 +112,7 @@
               "RelativeDocumentMoniker": "src\\Plugin\\Globals.cs",
               "ToolTip": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\src\\Plugin\\Globals.cs",
               "RelativeToolTip": "src\\Plugin\\Globals.cs",
-              "ViewState": "AQIAAEkAAAAAAAAAAAAAAGAAAAAqAAAA",
+              "ViewState": "AQIAAKUAAAAAAAAAAAAAAK8AAAApAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-06-16T15:27:04.311Z",
               "EditorCaption": ""
