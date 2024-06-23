@@ -23,10 +23,10 @@ namespace SharpTimer
 {
     public partial class SharpTimer
     {
-//        public string compileTimeStamp = new DateTime(CompileTimeStamp.CompileTime, DateTimeKind.Utc).ToString();
+        public string compileTimeStamp = new DateTime(CompileTimeStamp.CompileTime, DateTimeKind.Utc).ToString();
 
         public override string ModuleName => "SharpTimer";
-        public override string ModuleVersion => $"0.2.8 - 6/10/2024";
+        public override string ModuleVersion => $"0.2.9f";
         public override string ModuleAuthor => "dea https://github.com/deafps/";
         public override string ModuleDescription => "A CS2 Timer Plugin";
 
@@ -96,9 +96,11 @@ namespace SharpTimer
         public string? currentMapType = null;
         public int? currentMapTier = null;
 
+        public bool isLinux = true;
         public bool enableDebug = true;
         public bool killServerCommands = true;
         public bool useMySQL = false;
+        public bool usePostgres = false;
         public bool ignoreJSON = false;
         public bool enableReplays = false;
         public bool enableSRreplayBot = false;
@@ -126,6 +128,8 @@ namespace SharpTimer
         public bool rankEnabled = true;
         public bool helpEnabled = true;
         public bool alternativeSpeedometer = false;
+        public bool startzoneJumping = true;
+        public bool enableNoclip = false;
         public bool removeLegsEnabled = false;
         public bool hideAllPlayers = false;
         public bool removeCollisionEnabled = true;
@@ -155,7 +159,6 @@ namespace SharpTimer
         public int altVeloMaxSpeed = 3000;
         public bool forcePlayerSpeedEnabled = false;
         public float forcedPlayerSpeed = 250;
-
         public int bhopBlockTime = 16;
 
         public bool jumpStatsEnabled = false;
@@ -173,6 +176,7 @@ namespace SharpTimer
         public string tpSound = "sounds/ui/buttonclick.vsnd";
         public string? gameDir;
         public string? mySQLpath;
+        public string? postgresPath;
         public string? playerRecordsPath;
         public string? currentMapName;
         public string? defaultServerHostname = ConVar.Find("hostname")?.StringValue;
@@ -192,36 +196,36 @@ namespace SharpTimer
         public bool discordWebhookPrintPB = false;
 
 
-        public string? remoteBhopDataSource = "https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/bhop_.json";
-        public string? remoteKZDataSource = "https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/kz_.json";
-        public string? remoteSurfDataSource = "https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/surf_.json";
-        public string? testerPersonalGifsSource = "https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/tester_bling.json";
+        public string? remoteBhopDataSource = "https://raw.githubusercontent.com/Letaryat/poor-SharpTimer/main/remote_data/bhop_.json";
+        public string? remoteKZDataSource = "https://raw.githubusercontent.com/Letaryat/poor-SharpTimer/main/remote_data/kz_.json";
+        public string? remoteSurfDataSource = "https://raw.githubusercontent.com/Letaryat/poor-SharpTimer/main/remote_data/surf_.json";
+        public string? testerPersonalGifsSource = "https://raw.githubusercontent.com/Letaryat/poor-SharpTimer/main/remote_data/tester_bling.json";
 
-        public static string god3Icon = "<img src='https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/god.gif' class=''>";
-        public static string god2Icon = "<img src='https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/god.gif' class=''>";
-        public static string god1Icon = "<img src='https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/god.gif' class=''>";
-        public static string royalty3Icon = "<img src='https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/royal3.png' class=''>";
-        public static string royalty2Icon = "<img src='https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/royal2.png' class=''>";
-        public static string royalty1Icon = "<img src='https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/royal1.png' class=''>";
-        public static string legend3Icon = "<img src='https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/legend3.png' class=''>";
-        public static string legend2Icon = "<img src='https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/legend2.png' class=''>";
-        public static string legend1Icon = "<img src='https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/legend1.png' class=''>";
-        public static string master3Icon = "<img src='https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/master3.png' class=''>";
-        public static string master2Icon = "<img src='https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/master2.png' class=''>";
-        public static string master1Icon = "<img src='https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/master1.png' class=''>";
-        public static string diamond3Icon = "<img src='https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/dia3.png' class=''>";
-        public static string diamond2Icon = "<img src='https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/dia2.png' class=''>";
-        public static string diamond1Icon = "<img src='https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/dia1.png' class=''>";
-        public static string platinum3Icon = "<img src='https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/plat3.png' class=''>";
-        public static string platinum2Icon = "<img src='https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/plat2.png' class=''>";
-        public static string platinum1Icon = "<img src='https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/plat1.png' class=''>";
-        public static string gold3Icon = "<img src='https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/gold3.png' class=''>";
-        public static string gold2Icon = "<img src='https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/gold2.png' class=''>";
-        public static string gold1Icon = "<img src='https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/gold1.png' class=''>";
-        public static string silver3Icon = "<img src='https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/silver3.png' class=''>";
-        public static string silver2Icon = "<img src='https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/silver2.png' class=''>";
-        public static string silver1Icon = "<img src='https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/silver1.png' class=''>";
-        public static string unrankedIcon = "<img src='https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/unranked.png' class=''>";
+        public static string god3Icon = "<img src='https://raw.githubusercontent.com/Letaryat/poor-SharpTimer/main/remote_data/rank_icons/god.gif' class=''>";
+        public static string god2Icon = "<img src='https://raw.githubusercontent.com/Letaryat/poor-SharpTimer/main/remote_data/rank_icons/god.gif' class=''>";
+        public static string god1Icon = "<img src='https://raw.githubusercontent.com/Letaryat/poor-SharpTimer/main/remote_data/rank_icons/god.gif' class=''>";
+        public static string royalty3Icon = "<img src='https://raw.githubusercontent.com/Letaryat/poor-SharpTimer/main/remote_data/rank_icons/royal3.png' class=''>";
+        public static string royalty2Icon = "<img src='https://raw.githubusercontent.com/Letaryat/poor-SharpTimer/main/remote_data/rank_icons/royal2.png' class=''>";
+        public static string royalty1Icon = "<img src='https://raw.githubusercontent.com/Letaryat/poor-SharpTimer/main/remote_data/rank_icons/royal1.png' class=''>";
+        public static string legend3Icon = "<img src='https://raw.githubusercontent.com/Letaryat/poor-SharpTimer/main/remote_data/rank_icons/legend3.png' class=''>";
+        public static string legend2Icon = "<img src='https://raw.githubusercontent.com/Letaryat/poor-SharpTimer/main/remote_data/rank_icons/legend2.png' class=''>";
+        public static string legend1Icon = "<img src='https://raw.githubusercontent.com/Letaryat/poor-SharpTimer/main/remote_data/rank_icons/legend1.png' class=''>";
+        public static string master3Icon = "<img src='https://raw.githubusercontent.com/Letaryat/poor-SharpTimer/main/remote_data/rank_icons/master3.png' class=''>";
+        public static string master2Icon = "<img src='https://raw.githubusercontent.com/Letaryat/poor-SharpTimer/main/remote_data/rank_icons/master2.png' class=''>";
+        public static string master1Icon = "<img src='https://raw.githubusercontent.com/Letaryat/poor-SharpTimer/main/remote_data/rank_icons/master1.png' class=''>";
+        public static string diamond3Icon = "<img src='https://raw.githubusercontent.com/Letaryat/poor-SharpTimer/main/remote_data/rank_icons/dia3.png' class=''>";
+        public static string diamond2Icon = "<img src='https://raw.githubusercontent.com/Letaryat/poor-SharpTimer/main/remote_data/rank_icons/dia2.png' class=''>";
+        public static string diamond1Icon = "<img src='https://raw.githubusercontent.com/Letaryat/poor-SharpTimer/main/remote_data/rank_icons/dia1.png' class=''>";
+        public static string platinum3Icon = "<img src='https://raw.githubusercontent.com/Letaryat/poor-SharpTimer/main/remote_data/rank_icons/plat3.png' class=''>";
+        public static string platinum2Icon = "<img src='https://raw.githubusercontent.com/Letaryat/poor-SharpTimer/main/remote_data/rank_icons/plat2.png' class=''>";
+        public static string platinum1Icon = "<img src='https://raw.githubusercontent.com/Letaryat/poor-SharpTimer/main/remote_data/rank_icons/plat1.png' class=''>";
+        public static string gold3Icon = "<img src='https://raw.githubusercontent.com/Letaryat/poor-SharpTimer/main/remote_data/rank_icons/gold3.png' class=''>";
+        public static string gold2Icon = "<img src='https://raw.githubusercontent.com/Letaryat/poor-SharpTimer/main/remote_data/rank_icons/gold2.png' class=''>";
+        public static string gold1Icon = "<img src='https://raw.githubusercontent.com/Letaryat/poor-SharpTimer/main/remote_data/rank_icons/gold1.png' class=''>";
+        public static string silver3Icon = "<img src='https://raw.githubusercontent.com/Letaryat/poor-SharpTimer/main/remote_data/rank_icons/silver3.png' class=''>";
+        public static string silver2Icon = "<img src='https://raw.githubusercontent.com/Letaryat/poor-SharpTimer/main/remote_data/rank_icons/silver2.png' class=''>";
+        public static string silver1Icon = "<img src='https://raw.githubusercontent.com/Letaryat/poor-SharpTimer/main/remote_data/rank_icons/silver1.png' class=''>";
+        public static string unrankedIcon = "<img src='https://raw.githubusercontent.com/Letaryat/poor-SharpTimer/main/remote_data/rank_icons/unranked.png' class=''>";
 
 
         public struct WeaponSpeedStats
