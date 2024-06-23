@@ -348,15 +348,6 @@ namespace SharpTimer
             useMySQL = bool.TryParse(args, out bool useMySQLValue) ? useMySQLValue : args != "0" && useMySQL;
         }
 
-        [ConsoleCommand("sharptimer_postgres_enabled", "Whether player times should be put into a postgres database by default or not. Default value: false")]
-        [CommandHelper(whoCanExecute: CommandUsage.SERVER_ONLY)]
-        public void SharpTimerPostgresConvar(CCSPlayerController? player, CommandInfo command)
-        {
-            string args = command.ArgString;
-
-            usePostgres = bool.TryParse(args, out bool usePostgresValue) ? usePostgresValue : args != "0" && usePostgres;
-        }
-
         [ConsoleCommand("sharptimer_discordwebhook_enabled", "Whether player PBs or SRs should be printed into a discord channel or not. Default value: false")]
         [CommandHelper(whoCanExecute: CommandUsage.SERVER_ONLY)]
         public void SharpTimerDiscordWebhookConvar(CCSPlayerController? player, CommandInfo command)
@@ -790,24 +781,6 @@ namespace SharpTimer
             {
                 SharpTimerConPrint("Invalid fake trigger height value. Please provide a positive integer.");
             }
-        }
-
-        [ConsoleCommand("sharptimer_allow_startzone_jump", "Enable or disable jumping in startzone. Default value: true")]
-        [CommandHelper(whoCanExecute: CommandUsage.SERVER_ONLY)]
-        public void SharpTimerStartzoneJumpConvar(CCSPlayerController? player, CommandInfo command)
-        {
-            string args = command.ArgString;
-
-            startzoneJumping = bool.TryParse(args, out bool startzoneJumpingValue) ? startzoneJumpingValue : args != "0" && startzoneJumping;
-        }
-
-        [ConsoleCommand("sharptimer_enable_noclip", "Enable or disable noclip for regular players. Default value: false")]
-        [CommandHelper(whoCanExecute: CommandUsage.SERVER_ONLY)]
-        public void SharpTimerEnableNoclipConvar(CCSPlayerController? player, CommandInfo command)
-        {
-            string args = command.ArgString;
-
-            enableNoclip = bool.TryParse(args, out bool enableNoclipValue) ? enableNoclipValue : args != "0" && enableNoclip;
         }
 
         [ConsoleCommand("sharptimer_remote_data_bhop", "Override for bhop remote_data")]

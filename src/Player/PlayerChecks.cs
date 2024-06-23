@@ -23,7 +23,7 @@ namespace SharpTimer
     {
         private bool IsAllowedPlayer(CCSPlayerController? player)
         {
-            if (player == null || !player.IsValid || player.Pawn == null || !player.PlayerPawn.IsValid || !player.PawnIsAlive || playerTimers[player.Slot].IsNoclip)
+            if (player == null || !player.IsValid || player.Pawn == null || !player.PlayerPawn.IsValid || !player.PawnIsAlive)
             {
                 return false;
             }
@@ -181,39 +181,32 @@ namespace SharpTimer
                 {
                     return;
                 }
-                if (!useTriggersAndFakeZones)
-                {
+                if(!useTriggersAndFakeZones){
                     isInsideStartBox = IsVectorInsideBox(playerPos, currentMapStartC1, currentMapStartC2);
                     isInsideEndBox = IsVectorInsideBox(playerPos, currentMapEndC1, currentMapEndC2);
                 }
                 bool[] isInsideBonusStartBox = new bool[11];
                 bool[] isInsideBonusEndBox = new bool[11];
-                foreach (int bonus in totalBonuses)
+                foreach(int bonus in totalBonuses)
                 {
-                    if (bonus == 0)
-                    {
-
-                    }
-                    else
-                    {
+                    if(bonus == 0){
+                        
+                    }else{
                         if (currentBonusStartC1 == null || currentBonusStartC1.Length <= bonus ||
                             currentBonusStartC2 == null || currentBonusStartC2.Length <= bonus ||
                             currentBonusEndC1 == null || currentBonusEndC1.Length <= bonus ||
                             currentBonusEndC2 == null || currentBonusEndC2.Length <= bonus)
                         {
                             SharpTimerError($"Invalid bonus coordinates for bonus {bonus}");
-
+                
+                        }else{
+                        isInsideBonusStartBox[bonus] = IsVectorInsideBox(playerPos, currentBonusStartC1[bonus], currentBonusStartC2[bonus]);
+                        isInsideBonusEndBox[bonus] = IsVectorInsideBox(playerPos, currentBonusEndC1[bonus], currentBonusEndC2[bonus]);
                         }
-                        else
-                        {
-                            isInsideBonusStartBox[bonus] = IsVectorInsideBox(playerPos, currentBonusStartC1[bonus], currentBonusStartC2[bonus]);
-                            isInsideBonusEndBox[bonus] = IsVectorInsideBox(playerPos, currentBonusEndC1[bonus], currentBonusEndC2[bonus]);
-                        }
-                    }
+                    }    
                 }
-
-                if (!useTriggersAndFakeZones)
-                {
+            
+                if(!useTriggersAndFakeZones){
                     if (!isInsideStartBox && isInsideEndBox)
                     {
                         OnTimerStop(player);
@@ -221,11 +214,6 @@ namespace SharpTimer
                     }
                     else if (isInsideStartBox)
                     {
-                        if(playerTimers.TryGetValue(player.Slot, out PlayerTimerInfo? playerTimer))
-                        {
-                            playerTimer.inStartzone = true;
-                        }
-
                         OnTimerStart(player);
                         if (enableReplays) OnRecordingStart(player);
 
@@ -236,63 +224,41 @@ namespace SharpTimer
                             adjustVelocity(player, maxStartingSpeed, true);
                         }
                     }
-                    else if (!isInsideStartBox && playerTimers.TryGetValue(player.Slot, out PlayerTimerInfo? playerTimer))
-                    {
-                        playerTimer.inStartzone = false;
-                    }
                 }
-                foreach (int bonus in totalBonuses)
+                foreach(int bonus in totalBonuses)
                 {
-                    if (bonus == 0)
-                    {
+                    if(bonus == 0){
 
-                    }
-                    else
+                    }else{
+                    if (currentBonusStartC1 == null || currentBonusStartC1.Length <= bonus ||
+                        currentBonusStartC2 == null || currentBonusStartC2.Length <= bonus ||
+                        currentBonusEndC1 == null || currentBonusEndC1.Length <= bonus ||
+                        currentBonusEndC2 == null || currentBonusEndC2.Length <= bonus)
                     {
-                        if (currentBonusStartC1 == null || currentBonusStartC1.Length <= bonus ||
-                            currentBonusStartC2 == null || currentBonusStartC2.Length <= bonus ||
-                            currentBonusEndC1 == null || currentBonusEndC1.Length <= bonus ||
-                            currentBonusEndC2 == null || currentBonusEndC2.Length <= bonus)
+                        SharpTimerError($"Invalid bonus coordinates for bonus {bonus}");
+                
+                    }else{
+                        if (!isInsideBonusStartBox[bonus] && isInsideBonusEndBox[bonus])
                         {
-                            SharpTimerError($"Invalid bonus coordinates for bonus {bonus}");
-
+                            OnBonusTimerStop(player, bonus);
+                            if (enableReplays) OnRecordingStop(player);
                         }
-                        else
+                        else if (isInsideBonusStartBox[bonus])
                         {
-                            if (!isInsideBonusStartBox[bonus] && isInsideBonusEndBox[bonus])
-                            {
-                                OnBonusTimerStop(player, bonus);
-                                if (enableReplays) OnRecordingStop(player);
-                            }
-                            else if (isInsideBonusStartBox[bonus])
-                            {
-                                if(playerTimers.TryGetValue(player.Slot, out PlayerTimerInfo? playerTimer))
-                                {
-                                    playerTimer.inStartzone = true;
-                                }
+                            OnTimerStart(player, bonus);
+                            if (enableReplays) OnRecordingStart(player, bonus);
 
-                                OnTimerStart(player, bonus);
-                                if (enableReplays) OnRecordingStart(player, bonus);
-
-                                if ((maxStartingSpeedEnabled == true && use2DSpeed == false && Math.Round(playerSpeed.Length()) > maxStartingSpeed) ||
-                                    (maxStartingSpeedEnabled == true && use2DSpeed == true && Math.Round(playerSpeed.Length2D()) > maxStartingSpeed))
-                                {
-                                    Action<CCSPlayerController?, float, bool> adjustVelocity = use2DSpeed ? AdjustPlayerVelocity2D : AdjustPlayerVelocity;
-                                    adjustVelocity(player, maxStartingSpeed, true);
-                                }
-                            }
-                            else if (!isInsideBonusStartBox[bonus])
+                            if ((maxStartingSpeedEnabled == true && use2DSpeed == false && Math.Round(playerSpeed.Length()) > maxStartingSpeed) ||
+                                (maxStartingSpeedEnabled == true && use2DSpeed == true && Math.Round(playerSpeed.Length2D()) > maxStartingSpeed))
                             {
-                                if(playerTimers.TryGetValue(player.Slot, out PlayerTimerInfo? playerTimer))
-                                {
-                                    playerTimer.inStartzone = false;
-                                }
-                                
+                                Action<CCSPlayerController?, float, bool> adjustVelocity = use2DSpeed ? AdjustPlayerVelocity2D : AdjustPlayerVelocity;
+                                adjustVelocity(player, maxStartingSpeed, true);
                             }
                         }
                     }
                 }
-
+                }
+                
             }
             catch (Exception ex)
             {

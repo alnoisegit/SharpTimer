@@ -62,7 +62,6 @@ namespace SharpTimer
                     if (jumpStatsEnabled) playerJumpStats[playerSlot] = new PlayerJumpStats();
                     playerTimers[playerSlot].CurrentMapStage = 0;
                     playerTimers[playerSlot].CurrentMapCheckpoint = 0;
-                    SetNormalStyle(player);
                     playerTimers[playerSlot].IsRecordingReplay = false;
                     playerTimers[playerSlot].SetRespawnPos = null;
                     playerTimers[playerSlot].SetRespawnAng = null;
@@ -70,9 +69,9 @@ namespace SharpTimer
                     if (isForBot == false) _ = Task.Run(async () => await IsPlayerATester(steamID, playerSlot));
 
                     //PlayerSettings
-                    if ((useMySQL || usePostgres) && isForBot == false) _ = Task.Run(async () => await GetPlayerStats(player, steamID, playerName, playerSlot, true));
+                    if (useMySQL == true && isForBot == false) _ = Task.Run(async () => await GetPlayerStats(player, steamID, playerName, playerSlot, true));
 
-                    if (connectMsgEnabled == true && !useMySQL && !usePostgres) Server.PrintToChatAll($"{msgPrefix}Player {ChatColors.Red}{player.PlayerName} {ChatColors.White}connected!");
+                    if (connectMsgEnabled == true && useMySQL == false) Server.PrintToChatAll($"{msgPrefix}Player {ChatColors.Red}{player.PlayerName} {ChatColors.White}connected!");
                     if (cmdJoinMsgEnabled == true && isForBot == false) PrintAllEnabledCommands(player);
 
                     SharpTimerDebug($"Added player {player.PlayerName} with UserID {player.UserId} to connectedPlayers");
