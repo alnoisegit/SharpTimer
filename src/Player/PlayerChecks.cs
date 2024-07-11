@@ -58,6 +58,14 @@ namespace SharpTimer
             return isTeamValid && isConnected && isObservingValid;
         }
 
+        public bool IsAllowedClient(CCSPlayerController? player)
+        {
+            if (player == null || !player.IsValid || player.Pawn == null || !player.PlayerPawn.IsValid || player.IsBot)
+                return false;
+
+            return true;
+        }
+
         async Task IsPlayerATester(string steamId64, int playerSlot)
         {
             try
@@ -274,11 +282,11 @@ namespace SharpTimer
                                 OnTimerStart(player, bonus);
                                 if (enableReplays) OnRecordingStart(player, bonus);
 
-                                if ((maxStartingSpeedEnabled == true && use2DSpeed == false && Math.Round(playerSpeed.Length()) > maxStartingSpeed) ||
-                                    (maxStartingSpeedEnabled == true && use2DSpeed == true && Math.Round(playerSpeed.Length2D()) > maxStartingSpeed))
+                                if ((maxStartingSpeedEnabled == true && use2DSpeed == false && Math.Round(playerSpeed.Length()) > maxBonusStartingSpeed) ||
+                                    (maxStartingSpeedEnabled == true && use2DSpeed == true && Math.Round(playerSpeed.Length2D()) > maxBonusStartingSpeed))
                                 {
                                     Action<CCSPlayerController?, float, bool> adjustVelocity = use2DSpeed ? AdjustPlayerVelocity2D : AdjustPlayerVelocity;
-                                    adjustVelocity(player, maxStartingSpeed, true);
+                                    adjustVelocity(player, maxBonusStartingSpeed, true);
                                 }
                             }
                             else if (!isInsideBonusStartBox[bonus])
@@ -331,6 +339,47 @@ namespace SharpTimer
             {
                 SharpTimerError($"Error in CheckPlayerTriggerPushCoords: {ex.Message}");
             }
+        }
+
+        public bool CommandCooldown(CCSPlayerController? player)
+        {
+            if (playerTimers[player!.Slot].TicksSinceLastCmd < cmdCooldown)
+            {
+                PrintToChat(player, Localizer["command_cooldown"]);
+                return true;
+            }
+            return false;
+        }
+
+        public bool IsTimerBlocked(CCSPlayerController? player)
+        {
+            if (!playerTimers[player!.Slot].IsTimerBlocked)
+            {
+                PrintToChat(player, Localizer["stop_using_timer"]);
+                return true;
+            }
+            return false;
+        }
+
+        public bool ReplayCheck(CCSPlayerController? player)
+        {
+            if (playerTimers[player!.Slot].IsReplaying)
+            {
+                PrintToChat(player, Localizer["end_your_replay"]);
+                return true;
+            }
+            return false;
+        }
+
+        public bool CanCheckpoint(CCSPlayerController? player)
+        {
+            if (cpOnlyWhenTimerStopped == true && playerTimers[player!.Slot].IsTimerBlocked == false)
+            {
+                PrintToChat(player, Localizer["cant_use_checkpoint", (currentMapName!.Contains("surf_") ? "loc" : "checkpoint")]);
+                PlaySound(player, cpSoundError);
+                return true;
+            }
+            return false;
         }
     }
 }

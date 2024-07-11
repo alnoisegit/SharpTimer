@@ -13,6 +13,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+using System.Runtime.Intrinsics.X86;
 using System.Text.Json;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Cvars;
@@ -26,7 +27,7 @@ namespace SharpTimer
         public string compileTimeStamp = new DateTime(CompileTimeStamp.CompileTime, DateTimeKind.Utc).ToString();
 
         public override string ModuleName => "SharpTimer";
-        public override string ModuleVersion => $"0.3.0c";
+        public override string ModuleVersion => $"0.3.0m";
         public override string ModuleAuthor => "dea https://github.com/deafps/";
         public override string ModuleDescription => "A CS2 Timer Plugin";
 
@@ -34,7 +35,7 @@ namespace SharpTimer
         private Dictionary<int, PlayerJumpStats> playerJumpStats = [];
         private Dictionary<int, PlayerReplays> playerReplays = [];
         private Dictionary<int, List<PlayerCheckpoint>> playerCheckpoints = [];
-        private Dictionary<int, CCSPlayerController> connectedPlayers = [];
+        public Dictionary<int, CCSPlayerController> connectedPlayers = [];
         private Dictionary<int, CCSPlayerController> connectedReplayBots = [];
         private Dictionary<uint, CCSPlayerController> specTargets = [];
         private Dictionary<nint, TriggerPushData> triggerPushData = [];
@@ -48,7 +49,6 @@ namespace SharpTimer
             PropertyNameCaseInsensitive = true
         };
 
-        public string msgPrefix = $" {ChatColors.Green}[SharpTimer]{ChatColors.White} ";
         public string primaryHUDcolor = "green";
         public string secondaryHUDcolor = "orange";
         public string tertiaryHUDcolor = "white";
@@ -57,42 +57,51 @@ namespace SharpTimer
         public string startBeamColor = "";
         public string endBeamColor = "";
         public bool beamColorOverride = false;
-        public string currentMapStartTrigger = "trigger_startzone";
-        public string currentBonusStartTrigger = "b1_start";
-        public Vector? currentMapStartTriggerMaxs = null;
+
+        private bool useStageTriggers = false;
         public Vector? currentMapStartTriggerMins = null;
+        public Vector? currentMapStartTriggerMaxs = null;
+
+        public Vector? currentRespawnPos = null;
+        public QAngle? currentRespawnAng = null;
+        public string currentMapStartTrigger = "trigger_startzone";
         public string currentMapEndTrigger = "trigger_endzone";
-        public string currentBonusEndTrigger = "b1_end";
         public Vector currentMapStartC1 = new(0, 0, 0);
         public Vector currentMapStartC2 = new(0, 0, 0);
         public Vector currentMapEndC1 = new(0, 0, 0);
         public Vector currentMapEndC2 = new(0, 0, 0);
+        public Vector? currentEndPos = null;
+
+        private Dictionary<nint, int> cpTriggers = [];
+        public int cpTriggerCount;
+        private bool useCheckpointTriggers = false;
+
+        private Dictionary<int, Vector?> bonusRespawnPoses = [];
+        private Dictionary<int, QAngle?> bonusRespawnAngs = [];
+        public string currentBonusStartTrigger = "b1_start";
+        public string currentBonusEndTrigger = "b1_end";
         public Vector[] currentBonusStartC1 = new Vector[10];
         public Vector[] currentBonusStartC2 = new Vector[10];
         public Vector[] currentBonusEndC1 = new Vector[10];
         public Vector[] currentBonusEndC2 = new Vector[10];
         public Vector[] currentBonusEndPos = new Vector[10];
-        public Vector? currentRespawnPos = null;
-        public QAngle? currentRespawnAng = null;
-        public Vector? currentEndPos = null;
+
+        private Dictionary<nint, int> bonusCheckpointTriggers = [];
+        private int bonusCheckpointTriggerCount;
+        private bool useBonusCheckpointTriggers = false;
+
         public int[] totalBonuses = new int[11];
+
         public string[]? currentMapOverrideDisableTelehop = [];
         public string[]? currentMapOverrideMaxSpeedLimit = [];
         public bool currentMapOverrideStageRequirement = false;
         public bool currentMapOverrideTriggerPushFix = false;
-        private Dictionary<int, Vector?> bonusRespawnPoses = [];
-        private Dictionary<int, QAngle?> bonusRespawnAngs = [];
+
         private Dictionary<nint, int> stageTriggers = [];
-        private Dictionary<nint, int> cpTriggers = [];
-        private Dictionary<nint, int> bonusCheckpointTriggers = [];
         private Dictionary<int, Vector?> stageTriggerPoses = [];
         private Dictionary<int, QAngle?> stageTriggerAngs = [];
         public int stageTriggerCount;
-        public int cpTriggerCount;
-        private int bonusCheckpointTriggerCount;
-        private bool useStageTriggers = false;
-        private bool useCheckpointTriggers = false;
-        private bool useBonusCheckpointTriggers = false;
+
         public string? currentMapType = null;
         public int? currentMapTier = null;
 
@@ -101,11 +110,15 @@ namespace SharpTimer
         public bool killServerCommands = true;
         public bool useMySQL = false;
         public bool usePostgres = false;
+        public DatabaseType dbType;
+        public string dbPath = "";
+        public bool enableDb = false;
         public bool ignoreJSON = false;
         public bool enableReplays = false;
         public bool enableSRreplayBot = false;
         public bool startKickingAllFuckingBotsExceptReplayOneIFuckingHateValveDogshitFuckingCompanySmile = false;
         public int maxReplayFrames = 19200;
+
         public bool globalRanksEnabled = false;
         public bool globalRanksFreePointsEnabled = true;
         public int maxGlobalFreePoints = 20;
@@ -117,13 +130,14 @@ namespace SharpTimer
         //public string vipGifHost = "https://files.catbox.moe";
 
         public bool useTriggers = true;
-
         public bool useTriggersAndFakeZones = false;
 
         public bool respawnEnabled = true;
         public bool respawnEndEnabled = false;
+
         public bool keysOverlayEnabled = true;
         public bool hudOverlayEnabled = true;
+
         public bool topEnabled = true;
         public bool rankEnabled = true;
         public bool helpEnabled = true;
@@ -131,46 +145,62 @@ namespace SharpTimer
         public bool startzoneJumping = true;
         public bool spawnOnRespawnPos = false;
         public bool enableNoclip = false;
+
         public bool enableStyles = true;
         public bool enableStylePoints = true;
+
         public bool removeLegsEnabled = false;
         public bool hideAllPlayers = false;
         public bool removeCollisionEnabled = true;
         public bool disableDamage = true;
-        public bool altDmgHook = false;
-        public bool cpEnabled = false;
         public bool use2DSpeed = false;
+
+        public bool cpEnabled = false;
         public bool removeCpRestrictEnabled = false;
         public bool cpOnlyWhenTimerStopped = false;
+
         public bool connectMsgEnabled = true;
         public bool cmdJoinMsgEnabled = true;
         public bool autosetHostname = false;
-        public bool srEnabled = true;
-        public int adTimer = 120;
+
+        public bool adServerRecordEnabled = true;
+        public bool isADServerRecordTimerRunning = false;
+        public int adServerRecordTimer = 120;
+
+        public bool adMessagesEnabled = true;
+        public bool isADMessagesTimerRunning = false;
+        public int adMessagesTimer = 120;
+
         public int rankHUDTimer = 170;
+        public bool isRankHUDTimerRunning = false;
+
         public bool resetTriggerTeleportSpeedEnabled = false;
         public bool maxStartingSpeedEnabled = true;
         public int maxStartingSpeed = 320;
-        public bool isADTimerRunning = false;
-        public bool isRankHUDTimerRunning = false;
+        public int maxBonusStartingSpeed = 320;
+
         public bool removeCrouchFatigueEnabled = true;
         public bool goToEnabled = false;
         public bool fovChangerEnabled = true;
         public bool triggerPushFixEnabled = false;
         public int cmdCooldown = 64;
         public float fakeTriggerHeight = 50;
+        public bool Box3DZones = false;
         public int altVeloMaxSpeed = 3000;
         public bool forcePlayerSpeedEnabled = false;
         public float forcedPlayerSpeed = 250;
         public int bhopBlockTime = 16;
+
         public double lowgravPointModifier = 1.1;
         public double sidewaysPointModifier = 1.3;
+        public double halfSidewaysPointModifier = 1.3;
         public double onlywPointModifier = 1.33;
         public double onlyaPointModifier = 1.33;
         public double onlysPointModifier = 1.33;
         public double onlydPointModifier = 1.33;
         public double velPointModifier = 1.5;
         public double highgravPointModifier = 1.3;
+        public double fastForwardPointModifier = 1.3;
 
         public bool jumpStatsEnabled = false;
         public float jumpStatsMinDist = 175;
@@ -182,15 +212,20 @@ namespace SharpTimer
 
         public bool sqlCheck = false;
 
-        public string beepSound = "sounds/ui/csgo_ui_button_rollover_large.vsnd";
-        public string respawnSound = "sounds/buttons/button8.vsnd";
-        public string cpSound = "sounds/ui/counter_beep.vsnd";
-        public string cpSoundAir = "sounds/ui/weapon_cant_buy.vsnd";
-        public string tpSound = "sounds/ui/buttonclick.vsnd";
+        public bool soundsEnabledByDefault = false;
+        public string timerSound = "sounds/ui/counter_beep.vsnd";
+        public string respawnSound = "sounds/buttons/button9.vsnd";
+        public string cpSound = "sounds/ui/buttonclick.vsnd";
+        public string cpSoundError = "sounds/ui/weapon_cant_buy.vsnd";
+        public string tpSound = "sounds/buttons/blip1.vsnd";
         public string pbSound = "sounds/buttons/bell1.vsnd";
+        public string srSound = "sounds/ui/panorama/round_report_round_won_01.vsnd";
+        public bool srSoundAll = true;
+
         public string? gameDir;
         public string? mySQLpath;
         public string? postgresPath;
+        public string? PlayerStatsTable = "PlayerStats";
         public string? playerRecordsPath;
         public string? currentMapName;
         public string? defaultServerHostname = ConVar.Find("hostname")?.StringValue;
@@ -208,7 +243,6 @@ namespace SharpTimer
         public string? discordWebhookRareGif;
         public bool discordWebhookPrintSR = false;
         public bool discordWebhookPrintPB = false;
-
 
         public string? remoteBhopDataSource = "https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/bhop_.json";
         public string? remoteKZDataSource = "https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/kz_.json";
@@ -240,7 +274,6 @@ namespace SharpTimer
         public static string silver2Icon = "<img src='https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/silver2.png' class=''>";
         public static string silver1Icon = "<img src='https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/silver1.png' class=''>";
         public static string unrankedIcon = "<img src='https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/unranked.png' class=''>";
-
 
         public struct WeaponSpeedStats
         {

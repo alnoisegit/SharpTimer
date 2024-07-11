@@ -16,6 +16,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Modules.Commands;
+using CounterStrikeSharp.API.Modules.Entities;
 using CounterStrikeSharp.API.Modules.Utils;
 
 
@@ -27,7 +28,6 @@ namespace SharpTimer
         [CommandHelper(whoCanExecute: CommandUsage.SERVER_ONLY)]
         public void SharpTimerServerHostname(CCSPlayerController? player, CommandInfo command)
         {
-
             string args = command.ArgString.Trim();
 
             if (string.IsNullOrEmpty(args))
@@ -101,7 +101,7 @@ namespace SharpTimer
 
             if (int.TryParse(args, out int maxFreePoints) && maxFreePoints > 0)
             {
-                maxGlobalFreePoints = maxFreePoints * 64;
+                maxGlobalFreePoints = maxFreePoints;
                 SharpTimerConPrint($"SharpTimer free 'participation' rewards set to {maxFreePoints} times.");
             }
             else
@@ -499,15 +499,6 @@ namespace SharpTimer
             disableDamage = bool.TryParse(args, out bool disableDamageValue) ? disableDamageValue : args != "0" && disableDamage;
         }
 
-        [ConsoleCommand("sharptimer_remove_damage_use_alt", "Whether a much simpler 'nodamage' method should be used or not. Default value: false")]
-        [CommandHelper(whoCanExecute: CommandUsage.SERVER_ONLY)]
-        public void SharpTimerRemoveDamageAltConvar(CCSPlayerController? player, CommandInfo command)
-        {
-            string args = command.ArgString;
-
-            altDmgHook = bool.TryParse(args, out bool altDmgHookValue) ? altDmgHookValue : args != "0" && altDmgHook;
-        }
-
         [ConsoleCommand("sharptimer_remove_collision", "Whether Player collision should be removed or not. Default value: true")]
         [CommandHelper(whoCanExecute: CommandUsage.SERVER_ONLY)]
         public void SharpTimerRemoveCollisionConvar(CCSPlayerController? player, CommandInfo command)
@@ -562,7 +553,7 @@ namespace SharpTimer
             maxStartingSpeedEnabled = bool.TryParse(args, out bool maxStartingSpeedEnabledValue) ? maxStartingSpeedEnabledValue : args != "0" && maxStartingSpeedEnabled;
         }
 
-        [ConsoleCommand("sharptimer_max_start_speed", "Defines max speed the player is allowed to have while exiting the start trigger. Default value: 120")]
+        [ConsoleCommand("sharptimer_max_start_speed", "Defines max speed the player is allowed to have while exiting the start trigger. Default value: 320")]
         [CommandHelper(whoCanExecute: CommandUsage.SERVER_ONLY)]
         public void SharpTimerMaxStartSpeedConvar(CCSPlayerController? player, CommandInfo command)
         {
@@ -576,6 +567,23 @@ namespace SharpTimer
             else
             {
                 SharpTimerConPrint("Invalid max trigger speed value. Please provide a positive integer.");
+            }
+        }
+
+        [ConsoleCommand("sharptimer_max_bonus_start_speed", "Defines max speed the player is allowed to have while exiting the start trigger. Default value: 320")]
+        [CommandHelper(whoCanExecute: CommandUsage.SERVER_ONLY)]
+        public void SharpTimerMaxBonusStartSpeedConvar(CCSPlayerController? player, CommandInfo command)
+        {
+            string args = command.ArgString;
+
+            if (int.TryParse(args, out int speed) && speed > 0)
+            {
+                maxBonusStartingSpeed = speed;
+                SharpTimerConPrint($"SharpTimer max bonus trigger speed set to {speed}.");
+            }
+            else
+            {
+                SharpTimerConPrint("Invalid max bonus trigger speed value. Please provide a positive integer.");
             }
         }
 
@@ -650,15 +658,6 @@ namespace SharpTimer
             removeCrouchFatigueEnabled = bool.TryParse(args, out bool removeCrouchFatigueEnabledValue) ? removeCrouchFatigueEnabledValue : args != "0" && removeCrouchFatigueEnabled;
         }
 
-        [ConsoleCommand("sharptimer_ad_enabled", "Whether timed Server Record messages are enabled by default or not. Default value: true")]
-        [CommandHelper(whoCanExecute: CommandUsage.SERVER_ONLY)]
-        public void SharpTimerSRConvar(CCSPlayerController? player, CommandInfo command)
-        {
-            string args = command.ArgString;
-
-            srEnabled = bool.TryParse(args, out bool srEnabledValue) ? srEnabledValue : args != "0" && srEnabled;
-        }
-
         [ConsoleCommand("sharptimer_checkpoints_only_when_timer_stopped", "Will only allow checkpoints if timer is stopped using !timer")]
         [CommandHelper(whoCanExecute: CommandUsage.SERVER_ONLY)]
         public void SharpTimerCheckpointsOnlyWithStoppedTimer(CCSPlayerController? player, CommandInfo command)
@@ -694,15 +693,25 @@ namespace SharpTimer
             }
         }
 
-        [ConsoleCommand("sharptimer_ad_timer", "Interval how often SR shall be printed to chat. Default value: 120")]
+        /* ad messages */
+        [ConsoleCommand("sharptimer_ad_sr_enabled", "Whether to print sr message or not. Default value: true")]
         [CommandHelper(whoCanExecute: CommandUsage.SERVER_ONLY)]
-        public void SharpTimerMaxSRSpeedConvar(CCSPlayerController? player, CommandInfo command)
+        public void SharpTimerAdServerRecordEnabled(CCSPlayerController? player, CommandInfo command)
+        {
+            string args = command.ArgString;
+
+            adServerRecordEnabled = bool.TryParse(args, out bool adSREnabledValue) ? adSREnabledValue : args != "0" && adServerRecordEnabled;
+        }
+
+        [ConsoleCommand("sharptimer_ad_sr_timer", "Interval how often the messages shall be printed to chat. Default value: 240")]
+        [CommandHelper(whoCanExecute: CommandUsage.SERVER_ONLY)]
+        public void SharpTimerAdServerRecordTimer(CCSPlayerController? player, CommandInfo command)
         {
             string args = command.ArgString;
 
             if (int.TryParse(args, out int interval) && interval > 0)
             {
-                adTimer = interval;
+                adServerRecordTimer = interval;
                 SharpTimerConPrint($"SharpTimer sr ad interval set to {interval} seconds.");
             }
             else
@@ -711,27 +720,37 @@ namespace SharpTimer
             }
         }
 
-        [ConsoleCommand("sharptimer_chat_prefix", "Default value of chat prefix for SharpTimer messages. Default value: [SharpTimer]")]
+        [ConsoleCommand("sharptimer_ad_messages_enabled", "Whether to print ad message or not. Default value: true")]
         [CommandHelper(whoCanExecute: CommandUsage.SERVER_ONLY)]
-        public void SharpTimerChatPrefix(CCSPlayerController? player, CommandInfo command)
+        public void SharpTimerAdMessagesEnabled(CCSPlayerController? player, CommandInfo command)
         {
+            string args = command.ArgString;
 
-            string args = command.ArgString.Trim();
-
-            if (string.IsNullOrEmpty(args))
-            {
-                msgPrefix = $" {ChatColors.Green}[SharpTimer] {ChatColors.White}";
-                return;
-            }
-
-            msgPrefix = $" {ParsePrefixColors(args)} {ChatColors.White}";
+            adMessagesEnabled = bool.TryParse(args, out bool adCommandsEnabledValue) ? adCommandsEnabledValue : args != "0" && adMessagesEnabled;
         }
+
+        [ConsoleCommand("sharptimer_ad_messages_timer", "Interval how often the messages shall be printed to chat. Default value: 120")]
+        [CommandHelper(whoCanExecute: CommandUsage.SERVER_ONLY)]
+        public void SharpTimerAdMessagesTimer(CCSPlayerController? player, CommandInfo command)
+        {
+            string args = command.ArgString;
+
+            if (int.TryParse(args, out int interval) && interval > 0)
+            {
+                adMessagesTimer = interval;
+                SharpTimerConPrint($"SharpTimer messages ad interval set to {interval} seconds.");
+            }
+            else
+            {
+                SharpTimerConPrint("Invalid messages ad interval value. Please provide a positive integer.");
+            }
+        }
+        /* ad messages */
 
         [ConsoleCommand("sharptimer_hud_primary_color", "Primary Color for Timer HUD. Default value: green")]
         [CommandHelper(whoCanExecute: CommandUsage.SERVER_ONLY)]
         public void SharpTimerPrimaryHUDcolor(CCSPlayerController? player, CommandInfo command)
         {
-
             string args = command.ArgString.Trim();
 
             if (string.IsNullOrEmpty(args))
@@ -747,7 +766,6 @@ namespace SharpTimer
         [CommandHelper(whoCanExecute: CommandUsage.SERVER_ONLY)]
         public void SharpTimerSecondaryHUDcolor(CCSPlayerController? player, CommandInfo command)
         {
-
             string args = command.ArgString.Trim();
 
             if (string.IsNullOrEmpty(args))
@@ -763,7 +781,6 @@ namespace SharpTimer
         [CommandHelper(whoCanExecute: CommandUsage.SERVER_ONLY)]
         public void SharpTimerTertiaryHUDcolor(CCSPlayerController? player, CommandInfo command)
         {
-
             string args = command.ArgString.Trim();
 
             if (string.IsNullOrEmpty(args))
@@ -775,7 +792,7 @@ namespace SharpTimer
             tertiaryHUDcolor = $"{args}";
         }
 
-        [ConsoleCommand("sharptimer_fake_trigger_height", " ")]
+        [ConsoleCommand("sharptimer_fake_zones_height", "Fake Zones height in units. Default value: 50")]
         [CommandHelper(whoCanExecute: CommandUsage.SERVER_ONLY)]
         public void SharpTimerFakeTriggerHeightConvar(CCSPlayerController? player, CommandInfo command)
         {
@@ -790,6 +807,15 @@ namespace SharpTimer
             {
                 SharpTimerConPrint("Invalid fake trigger height value. Please provide a positive integer.");
             }
+        }
+
+        [ConsoleCommand("sharptimer_zones_box", "Make Zone a 3D Box. Default value: false")]
+        [CommandHelper(whoCanExecute: CommandUsage.SERVER_ONLY)]
+        public void SharpTimerZones3DBox(CCSPlayerController? player, CommandInfo command)
+        {
+            string args = command.ArgString;
+
+            Box3DZones = bool.TryParse(args, out bool ZoneBoxEnabledValue) ? ZoneBoxEnabledValue : args != "0" && Box3DZones;
         }
 
         [ConsoleCommand("sharptimer_allow_startzone_jump", "Enable or disable jumping in startzone. Default value: true")]
@@ -809,6 +835,89 @@ namespace SharpTimer
 
             spawnOnRespawnPos = bool.TryParse(args, out bool spawnOnRespawnPosValue) ? spawnOnRespawnPosValue : args != "0" && spawnOnRespawnPos;
         }
+
+        /* sounds convars */
+        [ConsoleCommand("sharptimer_enable_sounds_by_default", "Whether to enable sounds for players by default.Default value: false")]
+        [CommandHelper(whoCanExecute: CommandUsage.SERVER_ONLY)]
+        public void SharpTimerSoundEnableByDefault(CCSPlayerController? player, CommandInfo command)
+        {
+            string args = command.ArgString;
+
+            soundsEnabledByDefault = bool.TryParse(args, out bool soundsEnabledByDefaultValue) ? soundsEnabledByDefaultValue : args != "0" && soundsEnabledByDefault;
+        }
+
+        [ConsoleCommand("sharptimer_sound_timer", "Defines Timer sound. Default value: sounds/ui/counter_beep.vsnd")]
+        [CommandHelper(whoCanExecute: CommandUsage.SERVER_ONLY)]
+        public void SharpTimerSoundTimer(CCSPlayerController? player, CommandInfo command)
+        {
+            string args = command.ArgString.Trim();
+
+            timerSound = $"{args}";
+        }
+
+        [ConsoleCommand("sharptimer_sound_respawn", "Defines Timer sound. Default value: sounds/ui/counter_beep.vsnd")]
+        [CommandHelper(whoCanExecute: CommandUsage.SERVER_ONLY)]
+        public void SharpTimerSoundRespawn(CCSPlayerController? player, CommandInfo command)
+        {
+            string args = command.ArgString.Trim();
+
+            respawnSound = $"{args}";
+        }
+
+        [ConsoleCommand("sharptimer_sound_checkpoint", "Defines Checkpoint sound. Default value: sounds/ui/buttonclick.vsnd")]
+        [CommandHelper(whoCanExecute: CommandUsage.SERVER_ONLY)]
+        public void SharpTimerSoundCheckpoint(CCSPlayerController? player, CommandInfo command)
+        {
+            string args = command.ArgString.Trim();
+
+            cpSound = $"{args}";
+        }
+
+        [ConsoleCommand("sharptimer_sound_checkpoint_error", "Defines Checkpoint Error sound. Default value: sounds/ui/weapon_cant_buy.vsnd")]
+        [CommandHelper(whoCanExecute: CommandUsage.SERVER_ONLY)]
+        public void SharpTimerSoundCheckpointError(CCSPlayerController? player, CommandInfo command)
+        {
+            string args = command.ArgString.Trim();
+
+            cpSoundError = $"{args}";
+        }
+
+        [ConsoleCommand("sharptimer_sound_teleport", "Defines Teleport sound. Default value: sounds/buttons/blip1.vsnd")]
+        [CommandHelper(whoCanExecute: CommandUsage.SERVER_ONLY)]
+        public void SharpTimerSoundTeleport(CCSPlayerController? player, CommandInfo command)
+        {
+            string args = command.ArgString.Trim();
+
+            tpSound = $"{args}";
+        }
+
+        [ConsoleCommand("sharptimer_sound_pb", "Defines PB Sound. Default value: sounds/buttons/bell1.vsnd")]
+        [CommandHelper(whoCanExecute: CommandUsage.SERVER_ONLY)]
+        public void SharpTimerSoundPersonalBestRecord(CCSPlayerController? player, CommandInfo command)
+        {
+            string args = command.ArgString.Trim();
+
+            pbSound = $"{args}";
+        }
+
+        [ConsoleCommand("sharptimer_sound_sr", "Defines SR Sound. Default value: sounds/ui/panorama/round_report_round_won_01.vsnd")]
+        [CommandHelper(whoCanExecute: CommandUsage.SERVER_ONLY)]
+        public void SharpTimerSoundServerRecord(CCSPlayerController? player, CommandInfo command)
+        {
+            string args = command.ArgString.Trim();
+
+            srSound = $"{args}";
+        }
+
+        [ConsoleCommand("sharptimer_sound_sr_all_players", "Whether to play SR sound for all players. Default value: true")]
+        [CommandHelper(whoCanExecute: CommandUsage.SERVER_ONLY)]
+        public void SharpTimerSoundServerRecordAllPlayers(CCSPlayerController? player, CommandInfo command)
+        {
+            string args = command.ArgString;
+
+            srSoundAll = bool.TryParse(args, out bool soundSRAllValue) ? soundSRAllValue : args != "0" && srSoundAll;
+        }
+        /* sounds convars */
 
         [ConsoleCommand("sharptimer_enable_noclip", "Enable or disable noclip for regular players. Default value: false")]
         [CommandHelper(whoCanExecute: CommandUsage.SERVER_ONLY)]
@@ -975,6 +1084,40 @@ namespace SharpTimer
             else
             {
                 SharpTimerConPrint("Invalid highgrav point modifier. Please provide a positive integer.");
+            }
+        }
+
+        [ConsoleCommand("sharptimer_style_multiplier_halfsideways", "Point modifier for 400vel. Default value: 1.3")]
+        [CommandHelper(whoCanExecute: CommandUsage.SERVER_ONLY)]
+        public void SharpTimerHalfSidewaysConvar(CCSPlayerController? player, CommandInfo command)
+        {
+            string args = command.ArgString;
+
+            if (double.TryParse(args, out double pointModifier) && pointModifier > 0)
+            {
+                halfSidewaysPointModifier = pointModifier;
+                SharpTimerConPrint($"SharpTimer halfsideways point modifier set to {pointModifier}.");
+            }
+            else
+            {
+                SharpTimerConPrint("Invalid halfsideways point modifier. Please provide a positive integer.");
+            }
+        }
+
+        [ConsoleCommand("sharptimer_style_multiplier_fastforward", "Point modifier for 400vel. Default value: 1.3")]
+        [CommandHelper(whoCanExecute: CommandUsage.SERVER_ONLY)]
+        public void SharpTimerFastForwardConvar(CCSPlayerController? player, CommandInfo command)
+        {
+            string args = command.ArgString;
+
+            if (double.TryParse(args, out double pointModifier) && pointModifier > 0)
+            {
+                fastForwardPointModifier = pointModifier;
+                SharpTimerConPrint($"SharpTimer fastforward point modifier set to {pointModifier}.");
+            }
+            else
+            {
+                SharpTimerConPrint("Invalid fastforward point modifier. Please provide a positive integer.");
             }
         }
 
