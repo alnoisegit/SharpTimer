@@ -3,28 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\alnoi\\source\\repos\\SharpTimer\\remote_data\\surf_.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:remote_data\\surf_.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\alnoi\\source\\repos\\SharpTimer\\remote_data\\tester_bling.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:remote_data\\tester_bling.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\alnoi\\source\\repos\\SharpTimer\\cfg\\SharpTimer\\mysqlConfig.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:cfg\\SharpTimer\\mysqlConfig.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\alnoi\\source\\repos\\SharpTimer\\src\\Plugin\\Globals.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\Plugin\\Globals.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\alnoi\\source\\repos\\SharpTimer\\src\\Plugin\\Utils.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\Plugin\\Utils.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\alnoi\\source\\repos\\SharpTimer\\src\\SharpTimer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\SharpTimer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -47,77 +31,28 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "surf_.json",
-              "DocumentMoniker": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\remote_data\\surf_.json",
-              "RelativeDocumentMoniker": "remote_data\\surf_.json",
-              "ToolTip": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\remote_data\\surf_.json",
-              "RelativeToolTip": "remote_data\\surf_.json",
-              "ViewState": "AQIAAA8EAAAAAAAAAAAAABsEAAAUAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2024-07-11T14:29:49.093Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "mysqlConfig.json",
-              "DocumentMoniker": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\cfg\\SharpTimer\\mysqlConfig.json",
-              "RelativeDocumentMoniker": "cfg\\SharpTimer\\mysqlConfig.json",
-              "ToolTip": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\cfg\\SharpTimer\\mysqlConfig.json",
-              "RelativeToolTip": "cfg\\SharpTimer\\mysqlConfig.json",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAABAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2024-07-11T14:29:18.163Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
               "Title": "tester_bling.json",
               "DocumentMoniker": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\remote_data\\tester_bling.json",
               "RelativeDocumentMoniker": "remote_data\\tester_bling.json",
               "ToolTip": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\remote_data\\tester_bling.json",
               "RelativeToolTip": "remote_data\\tester_bling.json",
-              "ViewState": "AQIAABgAAAAAAAAAAAAAACsAAABLAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAACoAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2024-06-26T17:07:49.889Z",
+              "WhenOpened": "2024-07-16T06:47:38.572Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Utils.cs",
-              "DocumentMoniker": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\src\\Plugin\\Utils.cs",
-              "RelativeDocumentMoniker": "src\\Plugin\\Utils.cs",
-              "ToolTip": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\src\\Plugin\\Utils.cs",
-              "RelativeToolTip": "src\\Plugin\\Utils.cs",
-              "ViewState": "AQIAAAYAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-26T17:07:45.176Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 1,
               "Title": "Globals.cs",
               "DocumentMoniker": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\src\\Plugin\\Globals.cs",
               "RelativeDocumentMoniker": "src\\Plugin\\Globals.cs",
               "ToolTip": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\src\\Plugin\\Globals.cs",
               "RelativeToolTip": "src\\Plugin\\Globals.cs",
-              "ViewState": "AQIAAEcBAAAAAAAAAAAAAFcBAAABAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAB4AAABQAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-23T18:19:10.409Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "SharpTimer.cs",
-              "DocumentMoniker": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\src\\SharpTimer.cs",
-              "RelativeDocumentMoniker": "src\\SharpTimer.cs",
-              "ToolTip": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\src\\SharpTimer.cs",
-              "RelativeToolTip": "src\\SharpTimer.cs",
-              "ViewState": "AQIAAAwAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-23T18:18:59.65Z"
+              "WhenOpened": "2024-06-23T18:19:10.409Z",
+              "EditorCaption": ""
             }
           ]
         }
