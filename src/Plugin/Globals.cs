@@ -27,7 +27,7 @@ namespace SharpTimer
         public string compileTimeStamp = new DateTime(CompileTimeStamp.CompileTime, DateTimeKind.Utc).ToString();
 
         public override string ModuleName => "SharpTimer";
-        public override string ModuleVersion => $"0.3.0p";
+        public override string ModuleVersion => $"0.3.0q";
         public override string ModuleAuthor => "dea https://github.com/deafps/";
         public override string ModuleDescription => "A CS2 Timer Plugin";
 
@@ -51,6 +51,7 @@ namespace SharpTimer
 
         public string primaryHUDcolor = "green";
         public string secondaryHUDcolor = "orange";
+        public bool useDynamicColor = false;
         public string tertiaryHUDcolor = "white";
         public string primaryChatColor = "";
         public string startBeamColor = "";
@@ -304,7 +305,7 @@ namespace SharpTimer
         public static string Rank4Icon = "https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/plat3.png>";
         public static string Rank3Icon = "https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/gold3.png";
         public static string Rank2Icon = "https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/silver3.png";
-        public static string Rank1Icon = "https://raw.githubusercontent.com/alnoisegit/SharpTimerr/dev/remote_data/rank_icons/bronze.png";
+        public static string Rank1Icon = "https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/bronze.png";
         public static string UnrankedIcon = "https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/unranked.png";
 
         public struct WeaponSpeedStats

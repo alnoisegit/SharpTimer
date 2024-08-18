@@ -143,13 +143,13 @@ namespace SharpTimer
                         SharpTimerDebug($"{player.PlayerName} has wrong PlayerFov {player.DesiredFOV}... SetFov to {(uint)playerTimers[player.Slot].PlayerFov}");
                         SetFov(player, playerTimers[player.Slot].PlayerFov, true);
                     }
-                });
 
-                if (spawnOnRespawnPos == true && currentRespawnPos != null)
+                    if (spawnOnRespawnPos == true && currentRespawnPos != null)
                     player.PlayerPawn.Value!.Teleport(currentRespawnPos!, null, null);
 
-                if (enableStyles && playerTimers.ContainsKey(player.Slot))
-                    setStyle(player, playerTimers[player.Slot].currentStyle);
+                    if (enableStyles && playerTimers.ContainsKey(player.Slot))
+                        setStyle(player, playerTimers[player.Slot].currentStyle);
+                });
 
                 Server.NextFrame(() => InvalidateTimer(player));
 
@@ -271,7 +271,6 @@ namespace SharpTimer
                     var moveBackward = getMovementButton.Contains("Backward");
                     var moveLeft = getMovementButton.Contains("Left");
                     var moveRight = getMovementButton.Contains("Right");
-
                     if ((playerTimers[player.Slot].IsTimerRunning || playerTimers[player.Slot].IsBonusTimerRunning) && playerTimers[player.Slot].currentStyle.Equals(2) && (moveLeft || moveRight)) //sideways
                     {
                         userCmd.DisableInput(h.GetParam<IntPtr>(movementPtr), 1536); //disable left (512) + right (1024) = 1536
