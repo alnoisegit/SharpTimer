@@ -2536,8 +2536,8 @@
     "Type": "Linear"
   },
   "surf_paradigm": {
-    "Tier": 4,
-    "Type": "Linear"
+    "Tier": 3,
+    "Type": "Staged"
   },
   "surf_parrot_selector_h": {
     "Tier": 4,

@@ -27,8 +27,8 @@ namespace SharpTimer
         public string compileTimeStamp = new DateTime(CompileTimeStamp.CompileTime, DateTimeKind.Utc).ToString();
 
         public override string ModuleName => "SharpTimer";
-        public override string ModuleVersion => $"0.3.0q";
-        public override string ModuleAuthor => "dea https://github.com/deafps/";
+        public override string ModuleVersion => $"0.3.0r";
+        public override string ModuleAuthor => "dea https://github.com/deabb/";
         public override string ModuleDescription => "A CS2 Timer Plugin";
 
         public Dictionary<int, PlayerTimerInfo> playerTimers = [];
@@ -38,7 +38,6 @@ namespace SharpTimer
         public Dictionary<int, CCSPlayerController> connectedPlayers = [];
         private Dictionary<int, CCSPlayerController> connectedReplayBots = [];
         private Dictionary<uint, CCSPlayerController> specTargets = [];
-        private Dictionary<nint, TriggerPushData> triggerPushData = [];
         private EntityCache? entityCache;
         public Dictionary<string, PlayerRecord>? SortedCachedRecords = [];
         private static readonly HttpClient httpClient = new();
@@ -75,6 +74,7 @@ namespace SharpTimer
         private Dictionary<nint, int> cpTriggers = [];
         public int cpTriggerCount;
         private bool useCheckpointTriggers = false;
+        public bool useCheckpointVerification = true;
 
         private Dictionary<int, Vector?> bonusRespawnPoses = [];
         private Dictionary<int, QAngle?> bonusRespawnAngs = [];
@@ -95,7 +95,6 @@ namespace SharpTimer
         public string[]? currentMapOverrideDisableTelehop = [];
         public string[]? currentMapOverrideMaxSpeedLimit = [];
         public bool currentMapOverrideStageRequirement = false;
-        public bool currentMapOverrideTriggerPushFix = false;
 
         private Dictionary<nint, int> stageTriggers = [];
         private Dictionary<int, Vector?> stageTriggerPoses = [];
@@ -157,7 +156,6 @@ namespace SharpTimer
         public bool enableStylePoints = true;
 
         public bool removeLegsEnabled = false;
-        public bool hideAllPlayers = false;
         public bool removeCollisionEnabled = true;
         public bool disableDamage = true;
         public bool use2DSpeed = false;
@@ -189,7 +187,6 @@ namespace SharpTimer
         public bool removeCrouchFatigueEnabled = true;
         public bool goToEnabled = false;
         public bool fovChangerEnabled = true;
-        public bool triggerPushFixEnabled = false;
         public int cmdCooldown = 64;
         public float fakeTriggerHeight = 50;
         public bool Box3DZones = false;
@@ -305,7 +302,7 @@ namespace SharpTimer
         public static string Rank4Icon = "https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/plat3.png>";
         public static string Rank3Icon = "https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/gold3.png";
         public static string Rank2Icon = "https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/silver3.png";
-        public static string Rank1Icon = "https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/bronze.png";
+        public static string Rank1Icon = "https://raw.githubusercontent.com/alnoisegit/SharpTimer/dev/remote_data/rank_icons/bronze.png";
         public static string UnrankedIcon = "https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/unranked.png";
 
         public struct WeaponSpeedStats

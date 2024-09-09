@@ -99,7 +99,7 @@ namespace SharpTimer
                             });
                         }
                     }
-                    else if (player.IsValid)
+                    else if (player.IsValid && !player.IsBot)
                     {
                         Server.NextFrame(() => InvalidateTimer(player));
                     }
@@ -133,22 +133,16 @@ namespace SharpTimer
 
                 //specTargets[player.Pawn.Value.EntityHandle.Index] = new CCSPlayerController(player.Handle);
 
-                AddTimer(5.0f, () =>
-                {
-                    if (!player.IsValid || player == null || !IsAllowedPlayer(player))
-                        return;
+                if (enableStyles && playerTimers.ContainsKey(player.Slot))
+                    setStyle(player, playerTimers[player.Slot].currentStyle);
 
+                AddTimer(3.0f, () =>
+                {
                     if (enableDb && playerTimers.ContainsKey(player.Slot) && player.DesiredFOV != (uint)playerTimers[player.Slot].PlayerFov)
                     {
                         SharpTimerDebug($"{player.PlayerName} has wrong PlayerFov {player.DesiredFOV}... SetFov to {(uint)playerTimers[player.Slot].PlayerFov}");
                         SetFov(player, playerTimers[player.Slot].PlayerFov, true);
                     }
-
-                    if (spawnOnRespawnPos == true && currentRespawnPos != null)
-                    player.PlayerPawn.Value!.Teleport(currentRespawnPos!, null, null);
-
-                    if (enableStyles && playerTimers.ContainsKey(player.Slot))
-                        setStyle(player, playerTimers[player.Slot].currentStyle);
                 });
 
                 Server.NextFrame(() => InvalidateTimer(player));
@@ -236,12 +230,6 @@ namespace SharpTimer
                 return HookResult.Continue;
             });
 
-            HookEntityOutput("trigger_push", "OnStartTouch", (CEntityIOOutput output, string name, CEntityInstance activator, CEntityInstance caller, CVariant value, float delay) =>
-            {
-                TriggerPushOnStartTouch(activator, caller);
-                return HookResult.Continue;
-            });
-
             AddTimer(1.0f, () =>
             {
                 DamageHook();
@@ -319,7 +307,7 @@ namespace SharpTimer
                     }
                     return HookResult.Changed;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     //i dont fucking know why it spams errors when the player disconnects but is also passing all the null checks
                     //so here lies my humble try catch
