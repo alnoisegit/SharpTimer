@@ -443,6 +443,10 @@
     "Tier": 1,
     "Type": "Linear"
   },
+  "surf_dank": {
+    "Tier": 2,
+    "Type": "Linear"
+  },
   "surf_004": {
     "Tier": 2,
     "Type": "Linear"
