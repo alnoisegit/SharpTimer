@@ -22,7 +22,7 @@ using System.Runtime.InteropServices;
 
 namespace SharpTimer
 {
-    [MinimumApiVersion(228)]
+    [MinimumApiVersion(281)]
     public partial class SharpTimer : BasePlugin
     {
         //public required MemoryFunctionVoid<CCSPlayer_MovementServices, IntPtr> RunCommandLinux;
@@ -131,7 +131,10 @@ namespace SharpTimer
                 if (player.IsBot || !player.IsValid || player == null)
                     return HookResult.Continue;
 
-                //specTargets[player.Pawn.Value.EntityHandle.Index] = new CCSPlayerController(player.Handle);
+                if (player.IsValid && !player.IsBot)
+                {
+                    OnPlayerSpawn(player);
+                }
 
                 if (enableStyles && playerTimers.ContainsKey(player.Slot))
                     setStyle(player, playerTimers[player.Slot].currentStyle);

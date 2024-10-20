@@ -13,12 +13,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-using System.Drawing;
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
-using CounterStrikeSharp.API.Modules.Entities;
 using CounterStrikeSharp.API.Modules.Entities.Constants;
-using CounterStrikeSharp.API.Modules.Memory;
 using CounterStrikeSharp.API.Modules.Utils;
 
 namespace SharpTimer
@@ -64,8 +61,8 @@ namespace SharpTimer
                         PlayerButtons? playerButtons = player.Buttons;
                         Vector playerSpeed = player.PlayerPawn!.Value!.AbsVelocity;
 
-                        bool keyEnabled = playerTimer.HideKeys != true && keysOverlayEnabled == true;
-                        bool hudEnabled = playerTimer.HideTimerHud != true && hudOverlayEnabled == true;
+                        bool keyEnabled = !playerTimer.HideKeys && keysOverlayEnabled;
+                        bool hudEnabled = !playerTimer.HideTimerHud && hudOverlayEnabled;
 
                         string formattedPlayerVel = Math.Round(use2DSpeed ? playerSpeed.Length2D()
                                                                             : playerSpeed.Length())
@@ -73,28 +70,17 @@ namespace SharpTimer
                         int playerVel = int.Parse(formattedPlayerVel);
                         
                         string secondaryHUDcolorDynamic = "LimeGreen";
-                        if (playerVel < 349)
-                            secondaryHUDcolorDynamic = "LimeGreen";
-                        else if (playerVel < 699)
-                            secondaryHUDcolorDynamic = "Lime";
-                        else if (playerVel < 1049)
-                            secondaryHUDcolorDynamic = "GreenYellow";
-                        else if (playerVel < 1399)
-                            secondaryHUDcolorDynamic = "Yellow";
-                        else if (playerVel < 1749)
-                            secondaryHUDcolorDynamic = "Gold";
-                        else if (playerVel < 2099)
-                            secondaryHUDcolorDynamic = "Orange";
-                        else if (playerVel < 2449)
-                            secondaryHUDcolorDynamic = "DarkOrange";
-                        else if (playerVel < 2799)
-                            secondaryHUDcolorDynamic = "Tomato";
-                        else if (playerVel < 3149)
-                            secondaryHUDcolorDynamic = "OrangeRed";
-                        else if (playerVel < 3499)
-                            secondaryHUDcolorDynamic = "Red";
-                        else
-                            secondaryHUDcolorDynamic = "Crimson";
+                        int[] velocityThresholds = { 349, 699, 1049, 1399, 1749, 2099, 2449, 2799, 3149, 3499 };
+                        string[] hudColors = { "LimeGreen", "Lime", "GreenYellow", "Yellow", "Gold", "Orange", "DarkOrange", "Tomato", "OrangeRed", "Red", "Crimson" };
+
+                        for (int i = 0; i < velocityThresholds.Length; i++)
+                        {
+                            if (playerVel < velocityThresholds[i])
+                            {
+                                secondaryHUDcolorDynamic = hudColors[i];
+                                break;
+                            }
+                        }
 
                         string playerVelColor = useDynamicColor ? secondaryHUDcolorDynamic : secondaryHUDcolor;
                         string formattedPlayerPre = Math.Round(ParseVector(playerTimer.PreSpeed ?? "0 0 0").Length2D()).ToString("000");
@@ -291,7 +277,7 @@ namespace SharpTimer
                             }
                             else
                             {
-                                if (!isTimerBlocked && (player.PlayerPawn!.Value.MoveType == MoveType_t.MOVETYPE_OBSERVER || player.PlayerPawn.Value.ActualMoveType == MoveType_t.MOVETYPE_OBSERVER)) SetMoveType(player, MoveType_t.MOVETYPE_WALK);
+                                if (!isTimerBlocked && (player.PlayerPawn!.Value.MoveType.HasFlag(MoveType_t.MOVETYPE_OBSERVER) || player.PlayerPawn.Value.ActualMoveType.HasFlag(MoveType_t.MOVETYPE_OBSERVER))) SetMoveType(player, MoveType_t.MOVETYPE_WALK);
                             }
                         }
 
@@ -361,8 +347,8 @@ namespace SharpTimer
                     PlayerButtons? playerButtons = target.Buttons;
                     Vector playerSpeed = target.PlayerPawn!.Value!.AbsVelocity;
 
-                    bool keyEnabled = playerTimer.HideKeys != true && playerTimer.IsReplaying != true && keysOverlayEnabled == true;
-                    bool hudEnabled = playerTimer.HideTimerHud != true && hudOverlayEnabled == true;
+                    bool keyEnabled = !playerTimer.HideKeys && !playerTimer.IsReplaying && keysOverlayEnabled;
+                    bool hudEnabled = !playerTimer.HideTimerHud && hudOverlayEnabled;
 
                     string formattedPlayerVel = Math.Round(use2DSpeed ? playerSpeed.Length2D()
                                                                         : playerSpeed.Length())
