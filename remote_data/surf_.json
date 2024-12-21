@@ -447,6 +447,10 @@
     "Tier": 1,
     "Type": "Linear"
   },
+  "surf_hologram2": {
+    "Tier": 2,
+    "Type": "Linear"
+  },
   "surf_jade": {
     "Tier": 2,
     "Type": "Linear"
