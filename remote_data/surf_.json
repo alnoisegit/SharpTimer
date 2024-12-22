@@ -7,6 +7,10 @@
     "Tier": 1,
     "Type": "Linear"
   },
+  "surf_colum_2": {
+    "Tier": 1,
+    "Type": "Staged"
+  },
   "surf_prisma": {
     "Tier": 1,
     "Type": "Staged"
