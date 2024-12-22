@@ -63,7 +63,7 @@ namespace SharpTimer
 
             if(currentTicks == 0)
             {
-                PrintToChat(player, $"{ChatColors.LightRed} Error Saving Time: Player time is 0 ticks");
+                PrintToChat(player, $"{ChatColors.LightRed}{Localizer["error_savingtime"]}");
                 playerTimer.IsTimerRunning = false;
                 playerTimer.IsRecordingReplay = false;
                 return;
@@ -73,7 +73,7 @@ namespace SharpTimer
             {
                 if (playerTimer.CurrentMapStage != stageTriggerCount && currentMapOverrideStageRequirement == true)
                 {
-                    PrintToChat(player, $"{ChatColors.LightRed}Error Saving Time: Player current stage does not match final one ({stageTriggerCount})");
+                    PrintToChat(player, $"{ChatColors.LightRed}{Localizer["error_stagenotmatchfinalone"]}({stageTriggerCount})");
                     SharpTimerDebug($"Player current stage: {playerTimers[playerSlot].CurrentMapStage}; Final checkpoint: {stageTriggerCount}");
                     playerTimer.IsTimerRunning = false;
                     playerTimer.IsRecordingReplay = false;
@@ -82,7 +82,7 @@ namespace SharpTimer
 
                 if (playerTimer.CurrentMapCheckpoint != cpTriggerCount && useCheckpointVerification)
                 {
-                    PrintToChat(player, $"{ChatColors.LightRed}Error Saving Time: Player current checkpoint does not match final one ({cpTriggerCount})");
+                    PrintToChat(player, $"{ChatColors.LightRed}{Localizer["error_checkpointnotmatchfinalone"]}({cpTriggerCount})");
                     SharpTimerDebug($"Player current checkpoint: {playerTimers[playerSlot].CurrentMapCheckpoint}; Final checkpoint: {cpTriggerCount}");
                     playerTimer.IsTimerRunning = false;
                     playerTimer.IsRecordingReplay = false;
@@ -94,7 +94,7 @@ namespace SharpTimer
             {
                 if (playerTimer.CurrentMapStage != stageTriggerCount && currentMapOverrideStageRequirement == true)
                 {
-                    PrintToChat(player, $"{ChatColors.LightRed}Error Saving Time: Player current stage does not match final one ({stageTriggerCount})");
+                    PrintToChat(player, $"{ChatColors.LightRed}{Localizer["error_stagenotmatchfinalone"]}({stageTriggerCount})");
                     SharpTimerDebug($"Player current stage: {playerTimers[playerSlot].CurrentMapStage}; Final checkpoint: {stageTriggerCount}");
                     playerTimer.IsTimerRunning = false;
                     playerTimer.IsRecordingReplay = false;
@@ -106,7 +106,7 @@ namespace SharpTimer
             {
                 if (playerTimer.CurrentMapCheckpoint != cpTriggerCount && useCheckpointVerification)
                 {
-                    PrintToChat(player, $"{ChatColors.LightRed}Error Saving Time: Player current checkpoint does not match final one ({cpTriggerCount})");
+                    PrintToChat(player, $"{ChatColors.LightRed}{Localizer["error_checkpointnotmatchfinalone"]}({cpTriggerCount})");
                     SharpTimerDebug($"Player current checkpoint: {playerTimers[playerSlot].CurrentMapCheckpoint}; Final checkpoint: {cpTriggerCount}");
                     playerTimer.IsTimerRunning = false;
                     playerTimer.IsRecordingReplay = false;
@@ -307,16 +307,18 @@ namespace SharpTimer
                 {
                     if (useStageTriggers == true) //use stagetime instead
                     {
-                        playerTimers[playerSlot].CurrentMapCheckpoint += 1;
+                        playerTimers[playerSlot].CurrentMapCheckpoint = cpTrigger;
                         return;
                     }
 
                     SharpTimerDebug($"Player {playerName} has a checkpoint trigger with handle {triggerHandle}");
 
+                    playerTimers[playerSlot].CurrentMapCheckpoint = cpTrigger;
+
                     var playerTimerTicks = playerTimers[playerSlot].TimerTicks; // store so its in sync with player
 
                     var (srSteamID, srPlayerName, srTime) = ("null", "null", "null");
-                    if (playerTimers[playerSlot].CurrentMapCheckpoint == cpTrigger || playerTimers[playerSlot] == null) return;
+                    if (playerTimers[playerSlot] == null) return;
                     if (enableDb)
                     {
                         (srSteamID, srPlayerName, srTime) = await GetMapRecordSteamIDFromDatabase();
@@ -335,7 +337,7 @@ namespace SharpTimer
                         if (playerTimers.TryGetValue(playerSlot, out PlayerTimerInfo? playerTimer))
                         {
 
-                            if (playerTimer.CurrentMapCheckpoint == cpTrigger || playerTimer == null) return;
+                            if (playerTimer == null) return;
 
                             string currentStageSpeed = Math.Round(use2DSpeed ? Math.Sqrt(player.PlayerPawn.Value!.AbsVelocity.X * player.PlayerPawn.Value.AbsVelocity.X + player.PlayerPawn.Value.AbsVelocity.Y * player.PlayerPawn.Value.AbsVelocity.Y)
                                                                                 : Math.Sqrt(player.PlayerPawn.Value!.AbsVelocity.X * player.PlayerPawn.Value.AbsVelocity.X + player.PlayerPawn.Value.AbsVelocity.Y * player.PlayerPawn.Value.AbsVelocity.Y + player.PlayerPawn.Value.AbsVelocity.Z * player.PlayerPawn.Value.AbsVelocity.Z))
@@ -343,7 +345,7 @@ namespace SharpTimer
 
                             if (previousStageTime != 0)
                             {
-                                player.PrintToChat($" {Localizer["prefix"]} Checkpoint: {cpTrigger}");
+                                player.PrintToChat($" {Localizer["prefix"]} Checkpoint: {playerTimer.CurrentMapCheckpoint}");
                                 player.PrintToChat($" {Localizer["prefix"]} Time: {ChatColors.White}[{primaryChatColor}{FormatTime(playerTimerTicks)}{ChatColors.White}] " +
                                                                $" [{FormatTimeDifference(playerTimerTicks, previousStageTime)}{ChatColors.White}]" +
                                                                $" {(previousStageTime != srStageTime ? $"[SR {FormatTimeDifference(playerTimerTicks, srStageTime)}{ChatColors.White}]" : "")}");
@@ -377,7 +379,6 @@ namespace SharpTimer
                                     }
                                 }
                             }
-                            playerTimer.CurrentMapCheckpoint += 1;
                         }
                     });
                 }
@@ -401,7 +402,7 @@ namespace SharpTimer
                 {
                     if (useStageTriggers == true) //use stagetime instead
                     {
-                        playerTimers[playerSlot].CurrentMapCheckpoint += 1;
+                        playerTimers[playerSlot].CurrentMapCheckpoint = bonusCheckpointTrigger;
                         return;
                     }
 
@@ -471,7 +472,7 @@ namespace SharpTimer
                                     }
                                 }
                             }
-                            playerTimer.CurrentMapCheckpoint += 1;
+                            playerTimer.CurrentMapCheckpoint = bonusCheckpointTrigger;
                         }
                     });
                 }

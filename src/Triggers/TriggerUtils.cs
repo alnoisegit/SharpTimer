@@ -436,12 +436,41 @@ namespace SharpTimer
                 var (validCp, X) = IsValidCheckpointTriggerName(trigger.Entity.Name.ToString());
                 if (validCp)
                 {
+                    cpTriggerCount++;
                     cpTriggers[trigger.Handle] = X;
-                    SharpTimerDebug($"Added Checkpoint {X} Trigger {trigger.Handle}");
+                    SharpTimerDebug($"Added Checkpoint {cpTriggerCount} Trigger {trigger.Handle}");
                 }
             }
 
-            cpTriggerCount = cpTriggers.Any() ? cpTriggers.OrderByDescending(x => x.Value).First().Value : 0;
+           // Check for duplicate values in cpTriggers
+            var duplicateValues = cpTriggers.Values.GroupBy(x => x)
+                                                .Where(g => g.Count() > 1)
+                                                .Select(g => g.Key)
+                                                .ToList();
+
+            if (duplicateValues.Any())
+            {
+                SharpTimerDebug($"Duplicate checkpoint # detected");
+                foreach (var value in duplicateValues)
+                {
+                    cpTriggerCount--; //lower total cpTriggerCount to account for duplicate checkpoints
+                }
+
+                if ((cpTriggers.Count - cpTriggerCount) % 2 == 0) // check if ALL cptriggers minus duplicates is an even number. this will return true for maps that split in two
+                {
+                    SharpTimerDebug($"Map has multiple routes, duplicate checkpoints OK");
+                }
+                else
+                {
+                    // map checkpoints are fucked, disable global and ring the bell of shame
+                    SharpTimerDebug($"The map checkpoints are fucked and the porter should be ashamed");
+                    globalDisabled = true;
+                }
+            }
+            else
+            {
+                Console.WriteLine("No duplicate values found in cpTriggers.");
+            }
 
             useCheckpointTriggers = cpTriggerCount != 0;
 
