@@ -11,6 +11,10 @@
     "Tier": 1,
     "Type": "Staged"
   },
+  "surf_snowfort": {
+    "Tier": 1,
+    "Type": "Linear"
+  },
   "surf_prisma": {
     "Tier": 1,
     "Type": "Staged"
