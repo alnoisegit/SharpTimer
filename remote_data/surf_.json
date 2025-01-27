@@ -7,6 +7,10 @@
     "Tier": 1,
     "Type": "Staged"
   },
+  "surf_arctic": {
+    "Tier": 1,
+    "Type": "Linear"
+  },
   "surf_mineshaft": {
     "Tier": 1,
     "Type": "Linear"
