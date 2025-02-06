@@ -367,6 +367,10 @@
     "Tier": 1,
     "Type": "Linear"
   },
+  "surf_minuet_njv": {
+    "Tier": 1,
+    "Type": "Linear"
+  },
   "surf_mom": {
     "Tier": 1,
     "Type": "Staged"
@@ -584,6 +588,10 @@
     "Type": "Staged"
   },
   "surf_beverages_remix": {
+    "Tier": 2,
+    "Type": "Staged"
+  },
+  "surf_beverages_remix_csgo": {
     "Tier": 2,
     "Type": "Staged"
   },
