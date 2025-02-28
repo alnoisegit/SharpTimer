@@ -7,6 +7,14 @@
     "Tier": 1,
     "Type": "Linear"
   },
+  "surf_bombix_v2_p": {
+    "Tier": 1,
+    "Type": "Staged"
+  },
+  "surf_water-run_banjo_skill": {
+    "Tier": 1,
+    "Type": "Staged"
+  },
   "surf_capsule": {
     "Tier": 1,
     "Type": "Staged"
