@@ -7,6 +7,10 @@
     "Tier": 1,
     "Type": "Linear"
   },
+  "surf_moonkingdom": {
+    "Tier": 1,
+    "Type": "Linear"
+  },
   "surf_bombix_v2_p": {
     "Tier": 1,
     "Type": "Staged"
