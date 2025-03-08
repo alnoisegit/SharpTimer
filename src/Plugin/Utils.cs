@@ -23,7 +23,6 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
 using Vector = CounterStrikeSharp.API.Modules.Utils.Vector;
-using CounterStrikeSharp.API.Modules.Entities;
 using System.Runtime.InteropServices;
 
 namespace SharpTimer
@@ -930,10 +929,16 @@ namespace SharpTimer
                         sqlCheck = true;
                     }
 
-                    CacheWorldRecords();
+                    if (Directory.Exists($"{gameDir}/addons/StripperCS2/maps/{Server.MapName}"))
+                    {
+                        globalDisabled = true;
+                        SharpTimerError("StripperCS2 detected for current map; disabling globalapi");
+                    }
+                    
+                    _ = Task.Run(async () => await CacheWorldRecords());
                     AddTimer(globalCacheInterval, async () => await CacheWorldRecords(), TimerFlags.REPEAT);
 
-                    CacheGlobalPoints();
+                    _ = Task.Run(async () => await CacheGlobalPoints());
                     AddTimer(globalCacheInterval, async () => await CacheGlobalPoints(), TimerFlags.REPEAT);
                 });
             }
@@ -948,6 +953,7 @@ namespace SharpTimer
             try
             {
                 currentMapName = mapName;
+                currentAddonID = GetAddonID();
                 totalBonuses = new int[11];
                 bonusRespawnPoses.Clear();
                 bonusRespawnAngs.Clear();

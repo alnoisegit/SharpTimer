@@ -20,14 +20,11 @@ using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Modules.Admin;
 using CounterStrikeSharp.API.Modules.Commands;
-using CounterStrikeSharp.API.Modules.Utils;
 using System.Data;
 using Npgsql;
 using System.Data.Common;
 using System.Data.SQLite;
-using System.Data.Entity.Migrations.Infrastructure;
-using System.Data.Entity.Core.Metadata.Edm;
-using CounterStrikeSharp.API.Modules.Cvars;
+using System.Text.RegularExpressions;
 
 namespace SharpTimer
 {
@@ -232,9 +229,7 @@ namespace SharpTimer
                                                     "SoundsEnabled BOOL DEFAULT false",
                                                     "PlayerFov INT DEFAULT 0",
                                                     "IsVip BOOL DEFAULT false",
-                                                    "BigGifID VARCHAR(16) DEFAULT 'x'",
-                                                    "HideWeapon BOOL DEFAULT false",
-                                                    "HidePlayers BOOL DEFAULT false"
+                                                    "BigGifID VARCHAR(16) DEFAULT 'x'"
                                                 ];
                     break;
                 case DatabaseType.PostgreSQL:
@@ -259,9 +254,7 @@ namespace SharpTimer
                                                     @"""SoundsEnabled"" BOOL DEFAULT false",
                                                     @"""PlayerFov"" INT DEFAULT 0",
                                                     @"""IsVip"" BOOL DEFAULT false",
-                                                    @"""BigGifID"" VARCHAR(16) DEFAULT 'x'",
-                                                    @"""HideWeapon"" BOOL DEFAULT false",
-                                                    @"""HidePlayers"" BOOL DEFAULT false"
+                                                    @"""BigGifID"" VARCHAR(16) DEFAULT 'x'"
                                                 ];
                     break;
                 case DatabaseType.SQLite:
@@ -286,9 +279,7 @@ namespace SharpTimer
                                                     "SoundsEnabled INTEGER DEFAULT 1",
                                                     "PlayerFov INTEGER DEFAULT 0",
                                                     "IsVip INTEGER DEFAULT 0",
-                                                    "BigGifID TEXT DEFAULT 'x'",
-                                                    "HideWeapon INTEGER DEFAULT 0",
-                                                    "HidePlayers INTEGER DEFAULT 0"
+                                                    "BigGifID TEXT DEFAULT 'x'"
                                                 ];
                     break;
                 default:
@@ -548,8 +539,6 @@ namespace SharpTimer
                                             PlayerFov INT,
                                             IsVip BOOL,
                                             BigGifID VARCHAR(16),
-                                            HideWeapon BOOL,
-                                            HidePlayers BOOL,
                                             PRIMARY KEY (SteamID)
                                         )";
                     command = new MySqlCommand(query, (MySqlConnection)connection);
@@ -568,8 +557,6 @@ namespace SharpTimer
                                             ""PlayerFov"" INT,
                                             ""IsVip"" BOOL,
                                             ""BigGifID"" VARCHAR(16),
-                                            ""HideWeapon"" BOOL,
-                                            ""HidePlayers"" BOOL,
                                             PRIMARY KEY (""SteamID"")
                                         )";
                     command = new NpgsqlCommand(query, (NpgsqlConnection)connection);
@@ -587,9 +574,7 @@ namespace SharpTimer
                                             SoundsEnabled INTEGER,
                                             PlayerFov INTEGER,
                                             IsVip INTEGER,
-                                            BigGifID TEXT,
-                                            HideWeapon INTEGER,
-                                            HidePlayers INTEGER)";
+                                            BigGifID TEXT)";
                     command = new SQLiteCommand(query, (SQLiteConnection)connection);
                     break;
                 default:
@@ -797,8 +782,9 @@ namespace SharpTimer
                                     new Record
                                     {
                                         map_name = currentMapNamee,
+                                        workshop_id = currentAddonID,
                                         timer_ticks = timerTicks,
-                                        steamid = Convert.ToInt64(steamId),
+                                        steamid = steamId,
                                         player_name = playerName,
                                         formatted_time = FormatTime(timerTicks),
                                         unix_stamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
@@ -902,8 +888,9 @@ namespace SharpTimer
                                     new Record
                                     {
                                         map_name = currentMapNamee,
+                                        workshop_id = currentAddonID,
                                         timer_ticks = timerTicks,
-                                        steamid = Convert.ToInt64(steamId),
+                                        steamid = steamId,
                                         player_name = playerName,
                                         formatted_time = FormatTime(timerTicks),
                                         unix_stamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
@@ -1623,12 +1610,33 @@ namespace SharpTimer
             PrintToChatAll(Localizer["gained_points", playerName, Convert.ToInt32(newPoints - playerPoints), newPoints]);
         }
 
-        public async Task SavePlayerPoints(string steamId, string playerName, int playerSlot, int timerTicks, int oldTicks, bool beatPB = false, int bonusX = 0, int style = 0, int completions = 0, string mapname = "")
+        public (string, int) FixMapAndBonus(string mapName)
+        {
+            string pattern = @"_bonus(\d+)$";
+            Match match = Regex.Match(mapName, pattern);
+
+            if (match.Success)
+            {
+                int bonusNumber = int.Parse(match.Groups[1].Value);
+                string fixedMapName = Regex.Replace(mapName, pattern, "");
+
+                return (fixedMapName, bonusNumber);
+            }
+
+            // Unchanged if map name doesn't contain _bonusX from import
+            return (mapName, 0);
+        }
+
+        public async Task SavePlayerPoints(string steamId, string playerName, int playerSlot, int timerTicks, int oldTicks, bool beatPB = false, int bonusX = 0, int style = 0, int completions = 0, string mapname = "", bool import = false)
         {
             SharpTimerDebug($"Trying to set player points in database for {playerName}");
             try
             {
                 if (mapname == "") mapname = currentMapName!;
+
+                // If we're importing points, we need to fix mapname and bonusX
+                if (bonusX == 0)
+                    (mapname, bonusX) = FixMapAndBonus(mapname);
 
                 int timeNowUnix = (int)DateTimeOffset.UtcNow.ToUnixTimeSeconds();
                 // get player columns
@@ -1671,6 +1679,9 @@ namespace SharpTimer
 
                     using (selectCommand)
                     {
+                        if (import)
+                            selectCommand!.CommandTimeout = 120;
+                        
                         selectCommand!.AddParameterWithValue("@SteamID", steamId);
 
                         var row = await selectCommand!.ExecuteReaderAsync();
@@ -1763,14 +1774,12 @@ namespace SharpTimer
 
                                     await upsertCommand!.ExecuteNonQueryAsync();
 
-                                    Server.NextFrame(() => GainPointsMessage(playerName, newPoints, playerPoints));
+                                    if (!import) Server.NextFrame(() => GainPointsMessage(playerName, newPoints, playerPoints));
                                     Server.NextFrame(() => SharpTimerDebug($"Set points in database for {playerName} from {playerPoints} to {newPoints}"));
                                 }
                                 else
                                 {
                                     SharpTimerError($"Error setting player points to database for {playerName}: player was not on the server anymore");
-
-                                    return;
                                 }
                             }
 
@@ -1826,17 +1835,14 @@ namespace SharpTimer
 
                                     await upsertCommand!.ExecuteNonQueryAsync();
 
-                                    Server.NextFrame(() => GainPointsMessage(playerName, newPoints, playerPoints));
+                                    if (!import) Server.NextFrame(() => GainPointsMessage(playerName, newPoints, playerPoints));
                                     Server.NextFrame(() => SharpTimerDebug($"Set points in database for {playerName} from {playerPoints} to {newPoints}"));
                                 }
                                 else
                                 {
                                     SharpTimerError($"Error setting player points to database for {playerName}: player was not on the server anymore");
-
-                                    return;
                                 }
                             }
-
                         }
                     }
                 }
@@ -1857,7 +1863,7 @@ namespace SharpTimer
                 double newPoints;
 
                 // First calculate basic map completion points based on tier
-                newPoints = CalculateCompletion();
+                newPoints = CalculateCompletion(forGlobal);
 
                 // now grab sortedrecords for getting total map completes and top10
                 var sortedRecords = new Dictionary<int, PlayerRecord>();
@@ -1874,7 +1880,7 @@ namespace SharpTimer
                 bool isTop10 = false;
                 if (!sortedRecords.Any())
                 {
-                    newPoints += CalculateTop10(maxPoints, rank);
+                    newPoints += CalculateTop10(maxPoints, rank, forGlobal);
                     SharpTimerDebug($"First map entry, player {playerName} is rank #1");
                     isTop10 = true;
                 }
@@ -1896,7 +1902,7 @@ namespace SharpTimer
                 // If not in top 10, calculate groups based on percentile
                 if (!isTop10)
                 {
-                    newPoints += CalculateGroups(maxPoints, await GetPlayerMapPercentile(steamId, playerName, mapname, bonusX, style, forGlobal, timerTicks));
+                    newPoints += CalculateGroups(maxPoints, await GetPlayerMapPercentile(steamId, playerName, mapname, bonusX, style, forGlobal, timerTicks), forGlobal);
                 }
 
                 // if for global points, zero out style and bonus points
@@ -3010,21 +3016,18 @@ namespace SharpTimer
         {
             try
             {
+                Server.NextFrame(() => PrintToChatAll("Points import initialized"));
                 var sortedRecords = await GetAllSortedRecordsFromDatabase();
-
-                foreach (var record in sortedRecords)
+                
+                int batchSize = 10;
+                for (int i = 0; i < sortedRecords.Count; i += batchSize)
                 {
-                    string playerSteamID = record.SteamID!;
-                    string playerName = record.PlayerName!;
-                    int timerTicks = record.TimerTicks;
-                    string mapName = record.MapName!;
+                    var batch = sortedRecords.Skip(i).Take(batchSize);
+                    var tasks = batch.Select(record => SavePlayerPoints(record.SteamID!, record.PlayerName!, -1, record.TimerTicks, 0, false, 0, 0, 0, record.MapName!, true));
 
-                    if (enableDb && globalRanksEnabled == true)
-                    {
-                        _ = Task.Run(async () => await SavePlayerPoints(playerSteamID, playerName, -1, timerTicks, 0, false, 0, 0, 0, mapName));
-                        await Task.Delay(100);
-                    }
+                    await Task.WhenAll(tasks);
                 }
+                Server.NextFrame(() => PrintToChatAll("Points import completed"));
             }
             catch (Exception ex)
             {

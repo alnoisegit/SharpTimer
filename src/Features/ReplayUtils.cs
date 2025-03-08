@@ -19,9 +19,6 @@ using CounterStrikeSharp.API.Modules.Utils;
 using CounterStrikeSharp.API.Modules.Entities.Constants;
 using System.Text.Json;
 using Vector = CounterStrikeSharp.API.Modules.Utils.Vector;
-using CounterStrikeSharp.API.Modules.Entities;
-using static SharpTimer.PlayerReplays;
-using System.Text.Json.Serialization;
 
 namespace SharpTimer
 {
@@ -123,7 +120,7 @@ namespace SharpTimer
                     OnRecordingStop(player);
                 }
 
-                if (playerReplays[player.Slot].CurrentPlaybackFrame >= totalFrames)
+                if (playerReplays[player.Slot].CurrentPlaybackFrame < 0 || playerReplays[player.Slot].CurrentPlaybackFrame >= totalFrames)
                 {
                     playerReplays[player.Slot].CurrentPlaybackFrame = 0;
                     Action<CCSPlayerController?, float, bool> adjustVelocity = use2DSpeed ? AdjustPlayerVelocity2D : AdjustPlayerVelocity;

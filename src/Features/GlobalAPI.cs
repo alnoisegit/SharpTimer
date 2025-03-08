@@ -1,12 +1,9 @@
-using System.Data.Common;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
-using CounterStrikeSharp.API.Core.Attributes.Registration;
-using CounterStrikeSharp.API.Modules.Admin;
-using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Cvars;
 using CounterStrikeSharp.API.Modules.Utils;
 
@@ -16,6 +13,10 @@ namespace SharpTimer
     {
         private readonly HttpClient client = new HttpClient();
         RecordCache cache = new RecordCache();
+        
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+        private delegate IntPtr GetAddonNameDelegate(IntPtr thisPtr);
+        
         private string apiUrl = "https://stglobalapi.azurewebsites.net/api";
 
         public async Task SubmitRecordAsync(object payload)
@@ -51,17 +52,70 @@ namespace SharpTimer
             }
         }
 
+        public string GetAddonID()
+        {
+            // https://github.com/alliedmodders/hl2sdk/blob/f3b44f206d38d1b71164e558cd4087d84607d50c/public/iserver.h#L84-L85
+            // GetAddonName
+            IntPtr networkGameServer = networkServerService.GetIGameServer().Handle;
+            IntPtr vtablePtr = Marshal.ReadIntPtr(networkGameServer);
+            IntPtr functionPtr = Marshal.ReadIntPtr(vtablePtr + (25 * IntPtr.Size));
+            var getAddonName = Marshal.GetDelegateForFunctionPointer<GetAddonNameDelegate>(functionPtr);
+            IntPtr result = getAddonName(networkGameServer);
+            return Marshal.PtrToStringAnsi(result)!.Split(',')[0]; // return the first id in csv
+        }
+
+        public async Task<bool> CheckAddonAsync()
+        {
+            if (apiKey == "")
+                return false;
+
+            try
+            {
+                var payload = new
+                {
+                    workshop_id = currentAddonID
+                };
+                string jsonPayload = JsonSerializer.Serialize(payload);
+                SharpTimerDebug($"CheckAddon payload: {jsonPayload}");
+                var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Add("x-secret-key", apiKey);
+
+                HttpResponseMessage response = await client.PostAsync($"{apiUrl}/CheckAddonID", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                SharpTimerError($"Error in CheckAddonAsync: {ex.Message}");
+                return false;
+            }
+        }
+
         public async Task CacheWorldRecords()
         {
-            var sortedRecords = await GetSortedRecordsFromGlobal(10, 0, currentMapName!, 0);
+            IEnumerable<CCSPlayerController> players = Utilities.FindAllEntitiesByDesignerName<CCSPlayerController>("cs_player_controller");
 
+            if (!players.Any())
+                return;
+            
+            var sortedRecords = await GetSortedRecordsFromGlobal(10, 0, currentMapName!, 0);
             cache.CachedWorldRecords = sortedRecords;
         }
 
         public async Task CacheGlobalPoints()
         {
-            var sortedPoints = await GetTopPointsAsync();
+            IEnumerable<CCSPlayerController> players = Utilities.FindAllEntitiesByDesignerName<CCSPlayerController>("cs_player_controller");
 
+            if (!players.Any())
+                return;
+            
+            var sortedPoints = await GetTopPointsAsync();
             cache.CachedGlobalPoints = sortedPoints;
         }
 
@@ -168,6 +222,77 @@ namespace SharpTimer
             }
         }
 
+        public async Task<(int, int, int)> GetGlobalRank(CCSPlayerController? player)
+        {
+            if (apiKey == "")
+                return (0, 0, 0);
+            
+            try
+            {
+                var payload = new
+                {
+                    steamid = player!.SteamID
+                };
+                string jsonPayload = JsonSerializer.Serialize(payload);
+                var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Add("x-secret-key", apiKey);
+
+                HttpResponseMessage response = await client.PostAsync($"{apiUrl}/GetRank", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    using (var jsonDoc = JsonDocument.Parse(json))
+                    {
+                        if (jsonDoc.RootElement.TryGetProperty("data", out var data) &&
+                            data.ValueKind != JsonValueKind.Null)
+                        {
+                            int totalPoints = 0;
+                            int rank = 0;
+                            int totalPlayers = 0;
+
+                            if (data.TryGetProperty("total_points", out var pointsElement))
+                                totalPoints = pointsElement.GetInt32();
+                    
+                            if (data.TryGetProperty("rank", out var rankElement))
+                                rank = rankElement.GetInt32();
+                            
+                            if (data.TryGetProperty("total_players", out var playersElement))
+                                totalPlayers = playersElement.GetInt32();
+
+                            return (totalPoints, rank, totalPlayers);
+                        }
+                    }
+                }
+                else
+                {
+                    SharpTimerError($"Failed to retrieve player rank. Status code: {response.StatusCode}; Message: {response.Content}");
+                    return (0, 0, 0);
+                }
+            }
+            catch (Exception ex)
+            {
+                SharpTimerError($"Error in GetGlobalRankAsync: {ex.Message}");
+                return (0, 0, 0);
+            }
+            return (0, 0, 0);
+        }
+
+        public async Task PrintGlobalRankAsync(CCSPlayerController? player)
+        {
+            if (apiKey == "")
+                return;
+            
+            var (points, rank, totalPlayers) = await GetGlobalRank(player);
+            Server.NextFrame(() =>
+            {
+                PrintToChat(player, $"{Localizer["total_gpoints"]}: {points}");
+                PrintToChat(player, $"{Localizer["grank"]}: {rank}/{totalPlayers}");
+            });
+        }
+
         public async Task SubmitReplayAsync(object payload)
         {
             if (apiKey == "")
@@ -205,6 +330,9 @@ namespace SharpTimer
         {
             try
             {
+                if (cache.CachedWorldRecords is null)
+                    _ = Task.Run(async () => await CacheWorldRecords());
+                
                 Server.NextFrame(() =>
                 {
                     PrintToChat(player, Localizer["current_wr", currentMapName!]);
@@ -227,6 +355,9 @@ namespace SharpTimer
         {
             try
             {
+                if (cache.CachedGlobalPoints is null)
+                    _ = Task.Run(async () => await CacheGlobalPoints());
+                
                 Server.NextFrame(() =>
                 {
                     PrintToChat(player, Localizer["top_10_points"]);
@@ -273,7 +404,6 @@ namespace SharpTimer
                     var sortedRecords = new Dictionary<int, PlayerRecord>();
                     string jsonPayload = JsonSerializer.Serialize(payload);
                     var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
-                    SharpTimerDebug($"GetSortedRecordsFromGlobal payload: {jsonPayload}");
 
                     client.DefaultRequestHeaders.Clear();
                     client.DefaultRequestHeaders.Add("x-secret-key", apiKey);
@@ -283,7 +413,6 @@ namespace SharpTimer
                     if (response.IsSuccessStatusCode)
                     {
                         var json = await response.Content.ReadAsStringAsync();
-                        SharpTimerDebug($"GetSortedRecordsFromGlobal response: {json}");
                         using (var jsonDoc = JsonDocument.Parse(json))
                         {
                             var root = jsonDoc.RootElement;
@@ -295,7 +424,7 @@ namespace SharpTimer
                                 {
                                     string playerName = playerRecord.GetProperty("player_name").GetString()!;
                                     int timerTicks = playerRecord.GetProperty("timer_ticks").GetInt32();
-                                    long steamId = playerRecord.GetProperty("steamid").GetInt64();
+                                    string steamId = playerRecord.GetProperty("steamid").GetString()!;
                                     int recordId = playerRecord.GetProperty("record_id").GetInt32();
                                     bool replayExists = playerRecord.GetProperty("replay").GetBoolean();
 
@@ -314,7 +443,6 @@ namespace SharpTimer
                                                             .ToDictionary(record => record.Key, record => record.Value);
 
                                 SharpTimerDebug("Got sorted records from global");
-
                                 return sortedRecords;
                             }
                             else
@@ -516,7 +644,8 @@ namespace SharpTimer
                 && IsApproximatelyEqual(ConVar.Find("sv_wateraccelerate")!.GetPrimitiveValue<float>(), 10)
                 && ConVar.Find("sv_cheats")!.GetPrimitiveValue<bool>() == false
                 && (IsApproximatelyEqual(ConVar.Find("sv_air_max_wishspeed")!.GetPrimitiveValue<float>(), 30) || IsApproximatelyEqual(ConVar.Find("sv_air_max_wishspeed")!.GetPrimitiveValue<float>(), (float)37.41))
-                && IsApproximatelyEqual(ConVar.Find("sv_maxspeed")!.GetPrimitiveValue<float>(), 420))
+                && IsApproximatelyEqual(ConVar.Find("sv_maxspeed")!.GetPrimitiveValue<float>(), 420)
+                && useCheckpointVerification)
                 {
                     // THICK
                     globalChecksPassed = true;
@@ -539,6 +668,8 @@ namespace SharpTimer
                 SharpTimerConPrint($"sv_air_max_wishspeed: {ConVar.Find("sv_air_max_wishspeed")!.GetPrimitiveValue<float>()} [should be 30 or 37.41]");
                 SharpTimerConPrint($"sv_cheats: {ConVar.Find("sv_cheats")!.GetPrimitiveValue<bool>()} [should be false]");
                 SharpTimerConPrint($"Map is properly zoned?: {useTriggers} [should be true]");
+                SharpTimerConPrint($"Use checkpoint verification?: {useCheckpointVerification} [should be true]");
+                SharpTimerConPrint($"Using StripperCS2 on current map?: {Directory.Exists($"{gameDir}/addons/StripperCS2/maps/{Server.MapName}")} [should be false]");
 
                 globalDisabled = true;
                 globalChecksPassed = false;

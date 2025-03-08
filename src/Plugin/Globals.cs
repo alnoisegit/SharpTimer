@@ -13,9 +13,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-using System.Runtime.Intrinsics.X86;
 using System.Text.Json;
-using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Cvars;
 using CounterStrikeSharp.API.Modules.Utils;
@@ -28,7 +26,7 @@ namespace SharpTimer
         public string compileTimeStamp = new DateTime(CompileTimeStamp.CompileTime, DateTimeKind.Utc).ToString();
 
         public override string ModuleName => "SharpTimer";
-        public override string ModuleVersion => $"0.3.1s";
+        public override string ModuleVersion => $"0.3.1w";
         public override string ModuleAuthor => "dea https://github.com/deabb/";
         public override string ModuleDescription => "A CS2 Timer Plugin";
 
@@ -77,6 +75,8 @@ namespace SharpTimer
         public int cpTriggerCount;
         private bool useCheckpointTriggers = false;
         public bool useCheckpointVerification = true;
+        
+        public bool applyInfiniteAmmo = true;
         public bool useAnticheat = false;
 
         private Dictionary<int, Vector?> bonusRespawnPoses = [];
@@ -235,7 +235,7 @@ namespace SharpTimer
         public bool afkWarning = true;
         public int afkSeconds = 60;
         public int globalCacheInterval = 120;
-        public double lowgravPointModifier = 1.1;
+        public double lowgravPointModifier = 0.8;
         public double sidewaysPointModifier = 1.3;
         public double halfSidewaysPointModifier = 1.3;
         public double onlywPointModifier = 1.33;
@@ -243,8 +243,10 @@ namespace SharpTimer
         public double onlysPointModifier = 1.33;
         public double onlydPointModifier = 1.33;
         public double velPointModifier = 1.5;
-        public double highgravPointModifier = 1.3;
-        public double fastForwardPointModifier = 1.3;
+        public double highgravPointModifier = 1.1;
+        public double fastForwardPointModifier = 0.8;
+        public double parachutePointModifier = 0.8;
+        public double tasPointModifier = 0.0;
 
         public bool jumpStatsEnabled = false;
         public float jumpStatsMinDist = 175;
@@ -273,6 +275,7 @@ namespace SharpTimer
         public string? PlayerStatsTable = "PlayerStats";
         public string? playerRecordsPath;
         public string? currentMapName;
+        public string? currentAddonID;
         public string? defaultServerHostname = ConVar.Find("hostname")?.StringValue;
 
         public bool discordWebhookEnabled = false;
@@ -309,7 +312,7 @@ namespace SharpTimer
 
         public string UnrankedTitle = "[Unranked]";
         public string UnrankedColor = "{default}";
-        public static string UnrankedIcon = "https://raw.githubusercontent.com/Letaryat/poor-SharpTimer/main/remote_data/rank_icons/unranked.png";
+        public static string UnrankedIcon = "https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/unranked.png";
 
         public List<RankData> rankDataList = new List<RankData>();
         public class RankData
@@ -318,7 +321,7 @@ namespace SharpTimer
             public double Percent { get; set; } = 0;
             public int Placement { get; set; } = 0;
             public string Color { get; set; } = "{default}";
-            public string Icon { get; set; } = "https://raw.githubusercontent.com/Letaryat/poor-SharpTimer/main/remote_data/rank_icons/unranked.png";
+            public string Icon { get; set; } = "https://raw.githubusercontent.com/alnoisegit/SharpTimer/main/remote_data/rank_icons/unranked.png";
         }
 
         public struct WeaponSpeedStats

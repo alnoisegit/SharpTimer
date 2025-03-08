@@ -17,7 +17,6 @@ using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Entities.Constants;
 using CounterStrikeSharp.API.Modules.Utils;
-using Microsoft.Extensions.Localization;
 using System.Text.Json;
 
 namespace SharpTimer
@@ -472,6 +471,7 @@ namespace SharpTimer
                     playerCheckpoints.Remove(player.Slot);
                 }
                 playerTimers[player.Slot].TimerTicks = 0;
+                playerTimers[player.Slot].StageTicks = 0;
                 playerTimers[player.Slot].BonusTimerTicks = 0;
                 playerTimers[player.Slot].IsTimerRunning = false;
                 playerTimers[player.Slot].IsBonusTimerRunning = false;

@@ -45,6 +45,12 @@ namespace SharpTimer
                     case 10:
                         SetFastForward(player);
                         return;
+                    case 11:
+                        SetParachute(player);
+                        return;
+                    case 12:
+                        SetTAS(player);
+                        return;
                     default:
                         return;
                 }
@@ -119,6 +125,18 @@ namespace SharpTimer
             playerTimers[player.Slot].currentStyle = 4; // 4 = 400vel
             playerTimers[player.Slot].changedStyle = true;
         }
+        
+        public void SetParachute(CCSPlayerController player)
+        {
+            playerTimers[player.Slot].currentStyle = 11; // 11 = parachute
+            playerTimers[player.Slot].changedStyle = true;
+        }
+        
+        public void SetTAS(CCSPlayerController player)
+        {
+            playerTimers[player.Slot].currentStyle = 12; // 12 = TAS
+            playerTimers[player.Slot].changedStyle = true;
+        }
 
         public void SetVelocity(CCSPlayerController player, Vector currentVel, int desiredVel)
         {
@@ -163,6 +181,10 @@ namespace SharpTimer
                     return "Half Sideways";
                 case 10:
                     return "Fast Forward";
+                case 11:
+                    return "Parachute";
+                case 12:
+                    return "TAS";
                 default:
                     return "null";
             }
@@ -196,6 +218,10 @@ namespace SharpTimer
                         return 1.3;
                     case 10:
                         return 0.8;
+                    case 11:
+                        return 0.8;
+                    case 12:
+                        return 0.0;
                     default:
                         return 1;
                 }
@@ -223,7 +249,11 @@ namespace SharpTimer
                 case 9:
                     return halfSidewaysPointModifier; // 1.3x for halfsideways
                 case 10:
-                    return fastForwardPointModifier; // 1.3x for halfsideways
+                    return fastForwardPointModifier; // 1.3x for ff
+                case 11:
+                    return parachutePointModifier; // 0.8x for parachute
+                case 12:
+                    return tasPointModifier; // 0.0x for TAS
                 default:
                     return 1;
             }

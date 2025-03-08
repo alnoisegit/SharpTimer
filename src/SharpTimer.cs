@@ -16,13 +16,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Attributes;
-using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Cvars;
-using CounterStrikeSharp.API.Modules.Entities;
 using CounterStrikeSharp.API.Modules.Memory.DynamicFunctions;
-using CounterStrikeSharp.API.Modules.UserMessages;
 using System.Runtime.InteropServices;
-using static SharpTimer.PlayerTimerInfo;
 
 namespace SharpTimer
 {
@@ -74,7 +70,7 @@ namespace SharpTimer
                 AddTimer(randomf, () => CheckCvarsAndMaxVelo(), CounterStrikeSharp.API.Modules.Timers.TimerFlags.REPEAT);
 
             currentMapName = Server.MapName;
-
+            
             RegisterListener<Listeners.CheckTransmit>((CCheckTransmitInfoList infoList) =>
             {
                 IEnumerable<CCSPlayerController> players = Utilities.FindAllEntitiesByDesignerName<CCSPlayerController>("cs_player_controller");
@@ -87,10 +83,10 @@ namespace SharpTimer
                     if (player == null || player.IsBot || !player.IsValid || player.IsHLTV)
                         continue;
 
-                    if (!playerTimers[player.Slot].HidePlayers)
-                        continue;
-
                     if (!connectedPlayers.TryGetValue(player.Slot, out var connected))
+                        continue;
+                    
+                    if (!playerTimers[player.Slot].HidePlayers)
                         continue;
 
                     foreach (var target in Utilities.GetPlayers())
@@ -166,6 +162,21 @@ namespace SharpTimer
                 return HookResult.Continue;
             }, HookMode.Pre);
 
+            // Apply Infinite Ammo by https://github.com/zakriamansoor47
+            RegisterEventHandler<EventWeaponFire>((@event, info) =>
+            {
+                if (@event.Userid == null || !@event.Userid.IsValid) return HookResult.Continue;
+
+                var player = @event.Userid;
+
+                if (!applyInfiniteAmmo)
+                    return HookResult.Continue;
+                
+                ApplyInfiniteClip(player);
+                ApplyInfiniteReserve(player);
+                return HookResult.Continue;
+            });
+            
             RegisterListener<Listeners.OnMapStart>(OnMapStartHandler);
 
             RegisterEventHandler<EventPlayerConnectFull>((@event, info) =>
@@ -357,6 +368,24 @@ namespace SharpTimer
 
             SharpTimerConPrint("Plugin Loaded");
         }
+        
+        private void ApplyInfiniteClip(CCSPlayerController player)
+        {
+            var activeWeaponHandle = player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon;
+            if (activeWeaponHandle?.Value != null)
+            {
+                activeWeaponHandle.Value.Clip1 = 100;
+            }
+        }
+
+        private void ApplyInfiniteReserve(CCSPlayerController player)
+        {
+            var activeWeaponHandle = player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon;
+            if (activeWeaponHandle?.Value != null)
+            {
+                activeWeaponHandle.Value.ReserveAmmo[0] = 100;
+            }
+        }
 
         private HookResult Hook_StateTransition(DynamicHook h)
         {
@@ -404,6 +433,7 @@ namespace SharpTimer
                     var moveBackward = getMovementButton.Contains("Backward");
                     var moveLeft = getMovementButton.Contains("Left");
                     var moveRight = getMovementButton.Contains("Right");
+                    var usingUse = getMovementButton.Contains("Use");
 
                     // AC Stuff
                     if (useAnticheat)
@@ -457,6 +487,16 @@ namespace SharpTimer
                         userCmd.DisableInput(h.GetParam<IntPtr>(movementPtr), 1544); //disable right (1024) + forward (8) + left (512) = 1544
                         baseCmd.DisableSideMove(); //disable side movement
                         baseCmd.DisableForwardMove(); //disable only forward movement
+                        return HookResult.Changed;
+                    }
+                    if ((playerTimers[player.Slot].IsTimerRunning || playerTimers[player.Slot].IsBonusTimerRunning) && playerTimers[player.Slot].currentStyle.Equals(11) && usingUse) //parachute
+                    {
+                        player.Pawn.Value!.GravityScale = 0.2f;
+                        return HookResult.Changed;
+                    }
+                    if ((playerTimers[player.Slot].IsTimerRunning || playerTimers[player.Slot].IsBonusTimerRunning) && playerTimers[player.Slot].currentStyle.Equals(11) && !usingUse) //parachute
+                    {
+                        player.Pawn.Value!.GravityScale = 1f;
                         return HookResult.Changed;
                     }
                     return HookResult.Changed;

@@ -21,7 +21,6 @@ using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Utils;
 using CounterStrikeSharp.API.Modules.Memory;
 using CounterStrikeSharp.API.Modules.Admin;
-using System.Net;
 
 namespace SharpTimer
 {
@@ -174,6 +173,12 @@ namespace SharpTimer
             else
                 Server.NextFrame(() => PrintToChat(player, $"[GC] {ChatColors.Green}Valid ST build"));
 
+            var validAddon = await CheckAddonAsync();
+            if (!validAddon)
+                Server.NextFrame(() => PrintToChat(player, $"[GC] {ChatColors.LightRed}Map is not verified!"));
+            else
+                Server.NextFrame(() => PrintToChat(player, $"[GC] {ChatColors.Green}Map is verified"));
+            
             Server.NextFrame(() =>
             {
                 var (globalCheck, maxVel, maxWish) = CheckCvarsAndMaxVelo();
@@ -183,7 +188,7 @@ namespace SharpTimer
                     PrintToChat(player, $"[GC] {ChatColors.Green}Cvar Check Passed");
             });
 
-            if (!globalDisabled && validKey && validHash)
+            if (!globalDisabled && validKey && validHash && validAddon)
                 Server.NextFrame(() => PrintToChat(player, $"[GC] {ChatColors.Green}All checks passed!"));
             else
                 Server.NextFrame(() => PrintToChat(player, $"[GC] {ChatColors.LightRed}Some checks failed"));
@@ -464,7 +469,7 @@ namespace SharpTimer
             if (CommandCooldown(player))
                 return;
                 
-                playerTimers[playerSlot].TicksSinceLastCmd = 0;
+            playerTimers[playerSlot].TicksSinceLastCmd = 0;
 
             playerTimers[playerSlot].HideKeys = playerTimers[playerSlot].HideKeys ? false : true;
 
@@ -562,8 +567,13 @@ namespace SharpTimer
         {
             if (player == null || !IsAllowedPlayer(player) || player.Team == CsTeam.Spectator)
                 return;
+            
+            var playerName = player!.PlayerName;
+            var playerSlot = player.Slot;
+            var steamID = player.SteamID.ToString();
 
             playerTimers[player.Slot].HideWeapon = !playerTimers[player.Slot].HideWeapon;
+            _ = Task.Run(async () => await SetPlayerStats(player, steamID, playerName, playerSlot));
         }
 
         [ConsoleCommand("css_fov", "Sets the player's FOV")]
@@ -658,7 +668,7 @@ namespace SharpTimer
         }
         [ConsoleCommand("css_gpoints", "Prints top global points")]
         [CommandHelper(whoCanExecute: CommandUsage.CLIENT_ONLY)]
-        public void PrintGlobalPoints(CCSPlayerController? player, CommandInfo command)
+        public void PrintTopGlobalPoints(CCSPlayerController? player, CommandInfo command)
         {
             if (!IsAllowedClient(player))
                 return;
@@ -674,6 +684,25 @@ namespace SharpTimer
 
             PrintGlobalPoints(player);
             
+        }
+        [ConsoleCommand("css_grank", "Prints personal global rank")]
+        [CommandHelper(whoCanExecute: CommandUsage.CLIENT_ONLY)]
+        public void PrintPlayerGlobalPoints(CCSPlayerController? player, CommandInfo command)
+        {
+            if (!IsAllowedClient(player))
+                return;
+
+            var playerName = player!.PlayerName;
+
+            SharpTimerDebug($"{playerName} calling css_grank...");
+
+            if (CommandCooldown(player))
+                return;
+
+            playerTimers[player.Slot].TicksSinceLastCmd = 0;
+
+            _ = Task.Run(async () => await PrintGlobalRankAsync(player));
+
         }
         [ConsoleCommand("css_topbonus", "Prints top players of this map bonus")]
         [ConsoleCommand("css_btop", "alias for !topbonus")]
@@ -1317,7 +1346,7 @@ namespace SharpTimer
 
             if (command.ArgByIndex(1) == "")
             {
-                for (int i = 0; i < 11; i++) //runs 11 times for the 11 styles (i=0-10)
+                for (int i = 0; i < 13; i++) //runs 13 times for the 13 styles
                 {
                     PrintToChat(player, Localizer["styles_list", i, GetNamedStyle(i)]);
                 }
@@ -1340,6 +1369,8 @@ namespace SharpTimer
                     case 8:
                     case 9:
                     case 10:
+                    case 11:
+                    case 12:
                         setStyle(player, desiredStyleInt);
                         PrintToChat(player, Localizer["style_set", GetNamedStyle(desiredStyleInt)]);
                         break;
@@ -1409,6 +1440,15 @@ namespace SharpTimer
                     case "ff":
                         setStyle(player, 10);
                         PrintToChat(player, Localizer["style_set", GetNamedStyle(10)]);
+                        break;
+                    case "parachute":
+                    case "para":
+                        setStyle(player, 11);
+                        PrintToChat(player, Localizer["style_set", GetNamedStyle(11)]);
+                        break;
+                    case "tas":
+                        setStyle(player, 12);
+                        PrintToChat(player, Localizer["style_set", GetNamedStyle(12)]);
                         break;
                     default:
                         PrintToChat(player, Localizer["style_not_found", styleLowerCase]);
@@ -1647,9 +1687,16 @@ namespace SharpTimer
 
             if (CommandCooldown(player))
                 return;
+            
+            var playerName = player!.PlayerName;
+            var playerSlot = player.Slot;
+            var steamID = player.SteamID.ToString();
 
             playerTimers[player!.Slot].TicksSinceLastCmd = 0;
             playerTimers[player!.Slot].HidePlayers = !playerTimers[player!.Slot].HidePlayers;
+            
+            _ = Task.Run(async () => await SetPlayerStats(player, steamID, playerName, playerSlot));
+            
             if (playerTimers[player!.Slot].HidePlayers)
                 PrintToChat(player, $"Hide: {ChatColors.Green}Enabled");
             else
@@ -1766,9 +1813,6 @@ namespace SharpTimer
             if (!IsAllowedPlayer(player) || cpEnabled == false) return;
             SharpTimerDebug($"{player!.PlayerName} calling css_cp...");
 
-            if (CommandCooldown(player))
-                return;
-
             if (ReplayCheck(player))
                 return;
 
@@ -1784,10 +1828,13 @@ namespace SharpTimer
                 return;
             }
 
-            if (CanCheckpoint(player))
+            if (!CanCheckpoint(player))
                 return;
 
             playerTimers[player.Slot].TicksSinceLastCmd = 0;
+            
+            if(playerTimers[player.Slot].currentStyle == 12)
+                playerTimers[player.Slot].PrevTimerTicks.Add(playerTimers[player.Slot].TimerTicks);
 
             // Get the player's current position and rotation
             Vector currentPosition = player.Pawn.Value.CBodyComponent?.SceneNode?.AbsOrigin ?? new Vector(0, 0, 0);
@@ -1830,9 +1877,6 @@ namespace SharpTimer
             if (!IsAllowedPlayer(player) || cpEnabled == false) return;
             SharpTimerDebug($"{player!.PlayerName} calling css_tp...");
 
-            if (CommandCooldown(player))
-                return;
-
             if (ReplayCheck(player))
                 return;
 
@@ -1844,10 +1888,13 @@ namespace SharpTimer
             if (ReplayCheck(player))
                 return;
 
-            if (CanCheckpoint(player))
+            if (!CanCheckpoint(player))
                 return;
 
             playerTimers[player!.Slot].TicksSinceLastCmd = 0;
+            
+            if(playerTimers[player.Slot].currentStyle == 12)
+                playerTimers[player.Slot].TimerTicks = playerTimers[player.Slot].PrevTimerTicks[playerTimers[player.Slot].CheckpointIndex];
 
             // Check if the player has any checkpoints
             if (!playerCheckpoints.ContainsKey(player.Slot) || playerCheckpoints[player.Slot].Count == 0)
@@ -1891,13 +1938,10 @@ namespace SharpTimer
             if (!IsAllowedPlayer(player) || cpEnabled == false) return;
             SharpTimerDebug($"{player!.PlayerName} calling css_prevcp...");
 
-            if (CommandCooldown(player))
-                return;
-
             if (ReplayCheck(player))
                 return;
 
-            if (CanCheckpoint(player))
+            if (!CanCheckpoint(player))
                 return;
 
             playerTimers[player.Slot].TicksSinceLastCmd = 0;
@@ -1923,8 +1967,10 @@ namespace SharpTimer
                 PlayerCheckpoint previousCheckpoint = checkpoints[index];
                 
 
-                // Update the player's checkpoint index
+                // Update the player's checkpoint index and timer ticks
                 playerTimers[player.Slot].CheckpointIndex = index;
+                if(playerTimers[player.Slot].currentStyle == 12)
+                    playerTimers[player.Slot].TimerTicks = playerTimers[player.Slot].PrevTimerTicks[playerTimers[player.Slot].CheckpointIndex];
 
                 // Convert position and rotation strings to Vector and QAngle
                 Vector position = ParseVector(previousCheckpoint.PositionString ?? "0 0 0");
@@ -1949,13 +1995,10 @@ namespace SharpTimer
             if (!IsAllowedPlayer(player) || cpEnabled == false) return;
             SharpTimerDebug($"{player!.PlayerName} calling css_nextcp...");
 
-            if (CommandCooldown(player))
-                return;
-
             if (ReplayCheck(player))
                 return;
 
-            if (CanCheckpoint(player))
+            if (!CanCheckpoint(player))
                 return;
 
             playerTimers[player.Slot].TicksSinceLastCmd = 0;
@@ -1980,8 +2023,10 @@ namespace SharpTimer
 
                 PlayerCheckpoint nextCheckpoint = checkpoints[index];
 
-                // Update the player's checkpoint index
+                // Update the player's checkpoint index and timer ticks
                 playerTimers[player.Slot].CheckpointIndex = index;
+                if(playerTimers[player.Slot].currentStyle == 12)
+                    playerTimers[player.Slot].TimerTicks = playerTimers[player.Slot].PrevTimerTicks[playerTimers[player.Slot].CheckpointIndex];
 
                 // Convert position and rotation strings to Vector and QAngle
                 Vector position = ParseVector(nextCheckpoint.PositionString ?? "0 0 0");

@@ -116,6 +116,7 @@ namespace SharpTimer
         public bool IsNoclip { get; set; }
         public bool IsTimerBlocked { get; set; }
         public int TimerTicks { get; set; }
+        public List<int> PrevTimerTicks { get; set; } = new();
         public int StageTicks { get; set; }
         public bool IsBonusTimerRunning { get; set; }
         public int BonusTimerTicks { get; set; }
@@ -168,6 +169,7 @@ namespace SharpTimer
         public bool HideKeys { get; set; }
         public bool HidePlayers { get; set; }
         public bool HideWeapon { get; set; }
+        public bool GivenWeapon { get; set; }
         public bool SoundsEnabled { get; set; }
         public bool BindsDisabled { get; set; }
         public bool HideJumpStats { get; set; }
@@ -219,7 +221,6 @@ namespace SharpTimer
                 Y = angles.Y;
                 Z = angles.Z;
             }
-
         }
 
         public List<ViewAngle> ViewAngles { get; set; } = new List<ViewAngle>();
@@ -377,7 +378,8 @@ namespace SharpTimer
     public class Record
     {
         public string? map_name { get; set; }
-        public long steamid { get; set; }
+        public string? workshop_id { get; set; }
+        public string steamid { get; set; }
         public string? player_name { get; set; }
         public int timer_ticks { get; set; }
         public string? formatted_time { get; set; }
