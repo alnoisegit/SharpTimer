@@ -1139,6 +1139,10 @@
     "Tier": 2,
     "Type": "Linear"
   },
+  "surf_wank": {
+    "Tier": 3,
+    "Type": "Staged"
+  },
   "surf_1day": {
     "Tier": 3,
     "Type": "Staged"
@@ -3012,6 +3016,10 @@
     "Type": "Staged"
   },
   "surf_elysium3": {
+    "Tier": 5,
+    "Type": "Staged"
+  },
+  "surf_elysium3_cs2": {
     "Tier": 5,
     "Type": "Staged"
   },
