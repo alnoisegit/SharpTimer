@@ -7,6 +7,10 @@
     "Tier": 1,
     "Type": "Linear"
   },
+  "surf_gekyume_circumcision": {
+    "Tier": 1,
+    "Type": "Staged"
+  },
   "surf_hat": {
     "Tier": 1,
     "Type": "Staged"
