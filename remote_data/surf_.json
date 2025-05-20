@@ -7,6 +7,14 @@
     "Tier": 1,
     "Type": "Linear"
   },
+  "surf_runner": {
+    "Tier": 1,
+    "Type": "Staged"
+  },
+  "surf_gravity_ride": {
+    "Tier": 1,
+    "Type": "Staged"
+  },
   "surf_gekyume_circumcision": {
     "Tier": 1,
     "Type": "Staged"
@@ -507,6 +515,10 @@
     "Tier": 2,
     "Type": "Linear"
   },
+  "surf_interstellar": {
+    "Tier": 2,
+    "Type": "Staged"
+  },
   "surf_cuboid": {
     "Tier": 2,
     "Type": "Linear"
@@ -663,6 +675,10 @@
     "Tier": 2,
     "Type": "Staged"
   },
+  "surf_thicket": {
+    "Tier": 2,
+    "Type": "Hybrid"
+  },
   "surf_deadline": {
     "Tier": 2,
     "Type": "Staged"
@@ -688,6 +704,10 @@
     "Type": "Linear"
   },
   "surf_doodles_njv": {
+    "Tier": 2,
+    "Type": "Staged"
+  },
+  "surf_doodles": {
     "Tier": 2,
     "Type": "Staged"
   },
@@ -1162,6 +1182,10 @@
   "surf_wank": {
     "Tier": 3,
     "Type": "Staged"
+  },
+  "surf_kala": {
+    "Tier": 3,
+    "Type": "Linear"
   },
   "surf_padoga": {
     "Tier": 3,
@@ -2126,6 +2150,10 @@
   "surf_zion": {
     "Tier": 3,
     "Type": "Staged"
+  },
+  "surf_axiom2": {
+    "Tier": 3,
+    "Type": "Linear"
   },
   "surf_zoomboys": {
     "Tier": 3,
