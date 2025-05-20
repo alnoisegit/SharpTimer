@@ -3,6 +3,10 @@
     "Tier": 2,
     "Type": "Staged"
   },
+  "surf_piano": {
+    "Tier": 1,
+    "Type": "Staged"
+  },
   "surf_siren": {
     "Tier": 1,
     "Type": "Linear"
@@ -510,6 +514,14 @@
   "surf_zor": {
     "Tier": 1,
     "Type": "Linear"
+  },
+  "surf_paddy": {
+    "Tier": 2,
+    "Type": "Staged"
+  },
+  "surf_newsflash_pal": {
+    "Tier": 2,
+    "Type": "Staged"
   },
   "surf_sundown_njv": {
     "Tier": 2,
