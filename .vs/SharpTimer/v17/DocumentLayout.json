@@ -3,6 +3,22 @@
   "WorkspaceRootPath": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\alnoi\\source\\repos\\SharpTimer\\src\\Plugin\\Globals.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\Plugin\\Globals.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\alnoi\\source\\repos\\SharpTimer\\src\\SharpTimer.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\SharpTimer.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\alnoi\\source\\repos\\SharpTimer\\Build\\plugins\\SharpTimer\\SharpTimer.dll||{177559E0-D141-11D0-92DF-00A0C9138C45}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Build\\plugins\\SharpTimer\\SharpTimer.dll||{177559E0-D141-11D0-92DF-00A0C9138C45}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\alnoi\\source\\repos\\SharpTimer\\src\\Plugin\\Plugin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\Plugin\\Plugin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\alnoi\\source\\repos\\SharpTimer\\SharpTimer.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:SharpTimer.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
     },
@@ -21,10 +37,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\alnoi\\source\\repos\\SharpTimer\\src\\Plugin\\Utils.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\Plugin\\Utils.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\alnoi\\source\\repos\\SharpTimer\\src\\Plugin\\Globals.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\Plugin\\Globals.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\alnoi\\source\\repos\\SharpTimer\\remote_data\\surf_.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
@@ -54,7 +66,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 13,
           "Children": [
             {
               "$type": "Bookmark",
@@ -66,20 +78,55 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "SharpTimer.csproj",
-              "DocumentMoniker": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\SharpTimer.csproj",
-              "RelativeDocumentMoniker": "SharpTimer.csproj",
-              "ToolTip": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\SharpTimer.csproj",
-              "RelativeToolTip": "SharpTimer.csproj",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-05-20T15:02:34.99Z",
+              "DocumentIndex": 2,
+              "Title": "SharpTimer.dll",
+              "DocumentMoniker": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\Build\\plugins\\SharpTimer\\SharpTimer.dll",
+              "RelativeDocumentMoniker": "Build\\plugins\\SharpTimer\\SharpTimer.dll",
+              "ToolTip": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\Build\\plugins\\SharpTimer\\SharpTimer.dll",
+              "RelativeToolTip": "Build\\plugins\\SharpTimer\\SharpTimer.dll",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001697|",
+              "WhenOpened": "2025-06-05T13:27:18.32Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Plugin.cs",
+              "DocumentMoniker": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\src\\Plugin\\Plugin.cs",
+              "RelativeDocumentMoniker": "src\\Plugin\\Plugin.cs",
+              "ToolTip": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\src\\Plugin\\Plugin.cs",
+              "RelativeToolTip": "src\\Plugin\\Plugin.cs",
+              "ViewState": "AQIAAB0BAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-05T13:25:30.83Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "SharpTimer.csproj",
+              "DocumentMoniker": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\src\\SharpTimer.csproj",
+              "RelativeDocumentMoniker": "src\\SharpTimer.csproj",
+              "ToolTip": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\src\\SharpTimer.csproj",
+              "RelativeToolTip": "src\\SharpTimer.csproj",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAAPAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-06-05T13:08:44.811Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "SharpTimer.csproj",
+              "DocumentMoniker": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\SharpTimer.csproj",
+              "RelativeDocumentMoniker": "SharpTimer.csproj",
+              "ToolTip": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\SharpTimer.csproj",
+              "RelativeToolTip": "SharpTimer.csproj",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-05-20T15:02:34.99Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "SharpTimer.cs",
               "DocumentMoniker": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\src\\SharpTimer.cs",
               "RelativeDocumentMoniker": "src\\SharpTimer.cs",
@@ -92,7 +139,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 6,
               "Title": "ranks.json",
               "DocumentMoniker": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\cfg\\SharpTimer\\ranks.json",
               "RelativeDocumentMoniker": "cfg\\SharpTimer\\ranks.json",
@@ -100,12 +147,11 @@
               "RelativeToolTip": "cfg\\SharpTimer\\ranks.json",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-05-20T15:02:03.779Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-20T15:02:03.779Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 7,
               "Title": "stgamedata.json",
               "DocumentMoniker": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\cfg\\SharpTimer\\stgamedata.json",
               "RelativeDocumentMoniker": "cfg\\SharpTimer\\stgamedata.json",
@@ -113,12 +159,11 @@
               "RelativeToolTip": "cfg\\SharpTimer\\stgamedata.json",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-05-20T15:02:00.996Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-20T15:02:00.996Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 8,
               "Title": "Utils.cs",
               "DocumentMoniker": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\src\\Plugin\\Utils.cs",
               "RelativeDocumentMoniker": "src\\Plugin\\Utils.cs",
@@ -126,12 +171,11 @@
               "RelativeToolTip": "src\\Plugin\\Utils.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAEAAAAWAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-04T23:15:38.276Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-12-04T23:15:38.276Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 11,
               "Title": "PlayerTimers.cs",
               "DocumentMoniker": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\src\\Player\\PlayerTimers.cs",
               "RelativeDocumentMoniker": "src\\Player\\PlayerTimers.cs",
@@ -143,7 +187,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 12,
               "Title": "config.cfg",
               "DocumentMoniker": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\cfg\\SharpTimer\\config.cfg",
               "RelativeDocumentMoniker": "cfg\\SharpTimer\\config.cfg",
@@ -155,7 +199,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 9,
               "Title": "surf_.json",
               "DocumentMoniker": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\remote_data\\surf_.json",
               "RelativeDocumentMoniker": "remote_data\\surf_.json",
@@ -163,12 +207,24 @@
               "RelativeToolTip": "remote_data\\surf_.json",
               "ViewState": "AQIAAJACAAAAAAAAAAD4v6gCAAAEAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2024-08-04T21:12:08.86Z",
+              "WhenOpened": "2024-08-04T21:12:08.86Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Globals.cs",
+              "DocumentMoniker": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\src\\Plugin\\Globals.cs",
+              "RelativeDocumentMoniker": "src\\Plugin\\Globals.cs",
+              "ToolTip": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\src\\Plugin\\Globals.cs",
+              "RelativeToolTip": "src\\Plugin\\Globals.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAFMBAABnAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-06-23T18:19:10.409Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 13,
               "Title": "discordConfig.json",
               "DocumentMoniker": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\cfg\\SharpTimer\\discordConfig.json",
               "RelativeDocumentMoniker": "cfg\\SharpTimer\\discordConfig.json",
@@ -180,7 +236,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 10,
               "Title": "tester_bling.json",
               "DocumentMoniker": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\remote_data\\tester_bling.json",
               "RelativeDocumentMoniker": "remote_data\\tester_bling.json",
@@ -189,19 +245,6 @@
               "ViewState": "AQIAAAwAAAAAAAAAAAAAACoAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
               "WhenOpened": "2024-07-16T06:47:38.572Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Globals.cs",
-              "DocumentMoniker": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\src\\Plugin\\Globals.cs",
-              "RelativeDocumentMoniker": "src\\Plugin\\Globals.cs",
-              "ToolTip": "C:\\Users\\alnoi\\source\\repos\\SharpTimer\\src\\Plugin\\Globals.cs",
-              "RelativeToolTip": "src\\Plugin\\Globals.cs",
-              "ViewState": "AQIAAE0BAAAAAAAAAAASwGABAAAYAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-23T18:19:10.409Z",
-              "EditorCaption": ""
             }
           ]
         }

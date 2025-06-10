@@ -7,6 +7,10 @@
     "Tier": 1,
     "Type": "Staged"
   },
+  "surf_mayday": {
+    "Tier": 1,
+    "Type": "Staged"
+  },
   "surf_siren": {
     "Tier": 1,
     "Type": "Linear"
@@ -128,6 +132,10 @@
     "Type": "Linear"
   },
   "surf_whatever": {
+    "Tier": 2,
+    "Type": "Linear"
+  },
+  "surf_neo": {
     "Tier": 2,
     "Type": "Linear"
   },
@@ -763,6 +771,10 @@
     "Tier": 2,
     "Type": "Linear"
   },
+  "surf_epicube_ksf": {
+    "Tier": 2,
+    "Type": "Linear"
+  },
   "surf_ethereal": {
     "Tier": 2,
     "Type": "Staged"
@@ -1232,6 +1244,10 @@
     "Type": "Staged"
   },
   "surf_amplitude_apex": {
+    "Tier": 3,
+    "Type": "Staged"
+  },
+  "surf_amplitude_apex_njv": {
     "Tier": 3,
     "Type": "Staged"
   },
@@ -2100,6 +2116,10 @@
     "Type": "Staged"
   },
   "surf_undergrowth": {
+    "Tier": 3,
+    "Type": "Linear"
+  },
+  "surf_velianglium": {
     "Tier": 3,
     "Type": "Linear"
   },
@@ -3159,6 +3179,10 @@
     "Tier": 5,
     "Type": "Staged"
   },
+  "surf_infamous_ksf": {
+    "Tier": 5,
+    "Type": "Staged"
+  },
   "surf_infected_h": {
     "Tier": 5,
     "Type": "Linear"
@@ -3332,6 +3356,10 @@
     "Type": "Linear"
   },
   "surf_tycho": {
+    "Tier": 5,
+    "Type": "Staged"
+  },
+  "surf_sinister_mini": {
     "Tier": 5,
     "Type": "Staged"
   },
