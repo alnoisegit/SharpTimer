@@ -19,6 +19,14 @@
     "Tier": 1,
     "Type": "Staged"
   },
+  "surf_joshOG": {
+    "Tier": 1,
+    "Type": "Staged"
+  },
+  "surf_singletons": {
+    "Tier": 1,
+    "Type": "Staged"
+  },
   "surf_siren": {
     "Tier": 1,
     "Type": "Linear"
@@ -2115,6 +2123,10 @@
     "Tier": 3,
     "Type": "Staged"
   },
+  "surf_thembrium": {
+    "Tier": 3,
+    "Type": "Staged"
+  },
   "surf_theunexpected": {
     "Tier": 3,
     "Type": "Linear"
@@ -2842,6 +2854,10 @@
   "surf_rustic_v2": {
     "Tier": 4,
     "Type": "Hybrid"
+  },
+  "surf_rustic": {
+    "Tier": 4,
+    "Type": "Staged"
   },
   "surf_sacrifice": {
     "Tier": 4,
