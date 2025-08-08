@@ -195,6 +195,10 @@
     "Tier": 2,
     "Type": "Staged"
   },
+  "surf_autism_2": {
+    "Tier": 2,
+    "Type": "Staged"
+  },
   "surf_astra": {
     "Tier": 2,
     "Type": "Linear"
@@ -1687,6 +1691,10 @@
     "Tier": 3,
     "Type": "Staged"
   },
+  "surf_sc_essence": {
+    "Tier": 3,
+    "Type": "Staged"
+  },
   "surf_life_of_cow": {
     "Tier": 3,
     "Type": "Staged"
@@ -2151,6 +2159,10 @@
     "Tier": 3,
     "Type": "Linear"
   },
+  "surf_tron": {
+    "Tier": 3,
+    "Type": "Linear"
+  },
   "surf_tronia": {
     "Tier": 3,
     "Type": "Staged"
@@ -2502,6 +2514,10 @@
   "surf_fortress": {
     "Tier": 4,
     "Type": "Staged"
+  },
+  "surf_atlantis": {
+    "Tier": 4,
+    "Type": "Linear"
   },
   "surf_freedom": {
     "Tier": 4,
